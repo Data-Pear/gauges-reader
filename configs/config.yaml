@@ -1,0 +1,119 @@
+dataset:
+  name: endava_synthetic
+
+paths:
+  kaggle_ds_path: endava/synthetic-data-for-precision-gauge-reading
+  raw_ds_path: data/raw/kaggle_endava_gauges/sample_synth_datasets/ds6.0
+  processed_ds_path: data/processed/
+
+  images_path: data
+
+  train_inst_coco: train__inst_coco.json
+  val_inst_coco: val__inst_coco.json
+
+  train_kpts_coco: train__kpts_coco.json
+  val_kpts_coco: val__kpts_coco.json
+
+  train_inst_json: data/processed/train_regression.jsonl
+  val_inst_json: data/processed/val_regression.jsonl
+
+  train_det_kp_output_json: data/processed/train_det_kp.jsonl
+  val_det_kp_output_json: data/processed/val_det_kp.jsonl
+
+  weights_dir_reg: models/weights/reg
+  weights_dir_det_kp: models/weights/det_kp
+
+regression_target:
+  category_name: dial
+  value_key: synth_dial_value
+
+keypoints_target:
+  category_name: face_plate
+  names:
+    - dial_max
+    - dial_min
+    - dial_center
+    - dial_tip
+  num_keypoints: 4
+  format: coco_xyv # x,y,v
+
+det_kp:
+  use_bbox_from: inst_coco
+  use_keypoints_from: kpts_coco
+  bbox_category_name: face_plate
+  kpts_category_name: face_plate
+
+detector_target:
+  category_name: face_plate
+  num_classes: 1
+
+transforms_reg:
+  img_size: 256
+  normalize: true
+  mean: [0.485, 0.456, 0.406]
+  std: [0.229, 0.224, 0.225]
+
+  train:
+    hflip_p: 0.0 # для датчиков обычно лучше 0, чтобы не ломать "лево/право"
+    color_jitter_p: 0.3
+    color_jitter: [0.2, 0.2, 0.2, 0.05] # brightness, contrast, saturation, hue
+    random_affine_p: 0.3
+    degrees: 7
+    translate: 0.02
+    scale: [0.95, 1.05]
+    blur_p: 0.2
+
+model:
+  backbone: convnext_tiny # resnet34 | resnet50 | convnext_tiny | mobilenet_v3_large
+  pretrained: true
+  dropout: 0.1
+
+training_reg:
+  device: auto # auto|cpu|cuda
+  epochs: 30
+  batch_size: 32
+  num_workers: 4
+  lr: 3e-4
+  weight_decay: 1e-4
+  amp: true
+  seed: 42
+
+  loss: huber # huber|mse|l1
+  huber_delta: 0.05
+
+  # целевая метрика для best.pt
+  best_metric: mae # mae|rmse|r2|acc@tol
+  tol: 0.05 # для acc@tol (в units твоего value)
+
+  log_every: 50
+
+transforms_det_kp:
+  backend: albumentations
+  img_size: 256
+  bbox_format: pascal_voc # xyxy
+  clip: true
+  min_visibility: 0.0
+
+  train:
+    photometric_p: 0.7
+    rotate_limit: 3
+    scale_limit: 0.05
+    translate_limit: 0.02
+    blur_p: 0.2
+    jpeg_p: 0.2
+
+training_det_kp:
+  device: auto
+  epochs: 50
+  batch_size: 8
+  num_workers: 4
+  lr: 1e-4
+  weight_decay: 1e-4
+  amp: true
+  seed: 42
+  pretrained_coco: false # true => загрузка COCO-pretrained весов из интернета
+
+  best_metric: kpt_mae # или kpt_pck@0.05
+  pck_thr: 0.05
+  score_thr: 0.3
+  log_every: 50
