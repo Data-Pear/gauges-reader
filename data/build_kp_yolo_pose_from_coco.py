@@ -5,8 +5,8 @@ import json
 from collections import defaultdict
 import os
 from pathlib import Path
+import stat
 import shutil
-import subprocess
 from typing import Any, Dict, Iterable, Optional
 
 import yaml
@@ -58,6 +58,32 @@ def _resolve_dataset_root(cfg: Dict[str, Any], raw_root_arg: Optional[str]) -> P
     return Path(paths.get("raw_ds_path", paths.get("dataset_root", ""))).resolve()
 
 
+def _is_linked_directory(path: Path) -> bool:
+    if not path.exists():
+        return False
+    if path.is_symlink():
+        return True
+    if os.name == "nt":
+        try:
+            attrs = os.lstat(path).st_file_attributes
+            if attrs & stat.FILE_ATTRIBUTE_REPARSE_POINT:
+                return True
+        except Exception:
+            pass
+    try:
+        return os.path.normcase(str(path.resolve())) != os.path.normcase(str(path))
+    except Exception:
+        return False
+
+
+def _remove_linked_directory(path: Path) -> None:
+    if path.is_symlink():
+        path.unlink()
+        return
+    # For Windows junctions/mount points use rmdir to remove only the link entry.
+    os.rmdir(path)
+
+
 def _ensure_images_view(dataset_root: Path, yolo_root: Path) -> None:
     if yolo_root.resolve() == dataset_root.resolve():
         return
@@ -68,25 +94,18 @@ def _ensure_images_view(dataset_root: Path, yolo_root: Path) -> None:
             f"Expected images directory for yolo_dataset_root setup: {src_images}"
         )
 
-    dst_images = (yolo_root / "images").resolve()
+    # Keep unresolved path; resolving a junction points to source dir and hides links.
+    dst_images = yolo_root / "images"
     if dst_images.exists():
+        # Ultralytics resolves image paths; if images is a link to raw/,
+        # label lookup falls back to raw/labels and mixes task-specific labels.
+        if _is_linked_directory(dst_images):
+            _remove_linked_directory(dst_images)
+            shutil.copytree(src_images, dst_images, dirs_exist_ok=True)
         return
 
     yolo_root.mkdir(parents=True, exist_ok=True)
-    try:
-        if os.name == "nt":
-            subprocess.run(
-                ["cmd", "/c", "mklink", "/J", str(dst_images), str(src_images)],
-                check=True,
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL,
-            )
-        else:
-            os.symlink(src_images, dst_images, target_is_directory=True)
-        return
-    except Exception:
-        pass
-
+    # Always use a physical copy (not links) to keep labels resolution stable.
     shutil.copytree(src_images, dst_images, dirs_exist_ok=True)
 
 

@@ -82,7 +82,43 @@ models/weights/synthetic-analog-gauges/kp_yolov8n-pose
 models/weights/synthetic-analog-gauges/reg_resnet18
 ```
 
-## 3) Inference Visualizations
+## 3) Evaluate Models
+
+Detection metrics:
+
+```powershell
+uv run .\training\eval_detection_yolo.py --config configs/config_detection.yaml --split test
+```
+
+Keypoint metrics:
+
+```powershell
+uv run .\training\eval_keypoints_yolo_pose.py --config configs/config_keypoints.yaml --split test
+```
+
+Regression metrics:
+
+```powershell
+uv run .\training\eval_regression.py --config configs/config_regression.yaml --split test
+```
+
+Unified entrypoint:
+
+```powershell
+uv run .\training\eval.py --task detection --split test
+uv run .\training\eval.py --task keypoints --split test
+uv run .\training\eval.py --task regression --split test
+```
+
+Saved metric files:
+
+```powershell
+data/processed/detection_metrics.json
+data/processed/keypoints_metrics.json
+data/processed/regression_metrics.json
+```
+
+## 4) Inference Visualizations
 
 Detection (bbox pred vs gt):
 
