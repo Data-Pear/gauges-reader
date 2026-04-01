@@ -30,7 +30,7 @@ In this work, we introduce **SynthGauge**, a procedurally generated dataset desi
 
 **[FIGURE 1 - TEASER IMAGE HERE]**
 
-**Figure 1.** Sample images from SynthGauge showing diversity of instrument types and imaging conditions. From left to right: manometer with color zones (0-150 bar), tachometer (0-8000 RPM), compound pressure gauge (-15 to +60 PSI), thermometer (0-250 degC), tachometer with safety zones (0-6000 RPM). All images generated procedurally with Domain Randomization.
+**Figure 1.** Sample images from SynthGauge showing diversity of instrument types and imaging conditions. From left to right: manometer with color zones (0–150 bar), tachometer (0–8000 RPM), compound pressure gauge (−15 to +60 PSI), thermometer (0–250°C), tachometer with safety zones (0–6000 RPM). All images generated procedurally with Domain Randomization.
 
 ---
 
@@ -69,7 +69,7 @@ SynthGauge supports three computer vision tasks: (1) gauge face detection via bo
 
 Figure 2 illustrates the generation architecture comprising six components:
 
-**Configuration.** YAML files define 97 DR parameter ranges and 42 scale configurations covering manometers (bar, kPa, PSI), voltmeters, ammeters, thermometers (degC), tachometers (RPM), speedometers (km/h), and specialized instruments (vacuum, compound, differential pressure gauges).
+**Configuration.** YAML files define 97 DR parameter ranges and 42 scale configurations covering manometers (bar, kPa, PSI), voltmeters, ammeters, thermometers (°C), tachometers (RPM), speedometers (km/h), and specialized instruments (vacuum, compound, differential pressure gauges).
 
 **Domain Randomization.** For each image, parameters are sampled from configured distributions across seven groups: lighting, camera, materials, geometry, weathering, post-processing, and position.
 
@@ -77,11 +77,11 @@ Figure 2 illustrates the generation architecture comprising six components:
 
 **Scene Setup.** Camera pose, lighting sources (point, sun, area, IES profiles), and HDRI environment maps selected from 484 industrial backgrounds (Poly Haven, CC0).
 
-**Rendering.** Blender Cycles path tracer at 128 samples produces photorealistic output at 640x640 pixels.
+**Rendering.** Blender Cycles path tracer at 128 samples produces photorealistic output at 640×640 pixels.
 
 **Post-processing.** Camera simulation effects including film grain, Gaussian blur, vignette, chromatic aberration, barrel distortion, bloom, and JPEG compression.
 
-**Annotation.** COCO JSON with bounding boxes and custom fields: `reading_normalized` in [0,1], `needle_angle_cw_deg`, scale parameters, and complete DR metadata per image.
+**Annotation.** COCO JSON with bounding boxes and custom fields: `reading_normalized` ∈ [0,1], `needle_angle_cw_deg`, scale parameters, and complete DR metadata per image.
 
 ---
 
@@ -99,23 +99,23 @@ We randomize 97 parameters across seven groups. Table 2 summarizes key parameter
 
 | Group | Params | Key Ranges |
 |-------|--------|------------|
-| Lighting | 9 | 2-4 sources, 2700-6500K, 484 HDRIs, IES profiles (30%), dim mode (5%) |
-| Camera | 6 | 35-85mm focal, 0.4-0.55m distance, +/-15 deg tilt/azimuth |
+| Lighting | 9 | 2–4 sources, 2700–6500K, 484 HDRIs, IES profiles (30%), dim mode (5%) |
+| Camera | 6 | 35–85mm focal, 0.4–0.55m distance, ±15° tilt/azimuth |
 | Materials | 18 | 11 housing materials, 4 needle shapes, 8 colors, glass types |
-| Geometry | 6 | 42 scale configs, 0-270 deg needle angle, body shapes |
+| Geometry | 6 | 42 scale configs, 0–270° needle angle, body shapes |
 | Weathering | 4 | Edge wear, scratches, oil stains, glass smudges |
 | Post-process | 12 | Noise, JPEG, blur, vignette, chromatic aberration, barrel distortion |
 | Position | 2 | 30% off-center, up to 25% offset |
 
-**Lighting** encompasses 2-4 sources with randomized type, intensity (1.1-1.25), and color temperature (2700-6500K). A dim lighting mode (5% of images) simulates poorly-lit industrial environments. Industrial IES luminaire profiles (30% of images) add realistic factory lighting patterns. HDRI environment maps provide contextual reflections and backgrounds.
+**Lighting** encompasses 2–4 sources with randomized type, intensity (1.1–1.25), and color temperature (2700–6500K). A dim lighting mode (5% of images) simulates poorly-lit industrial environments. Industrial IES luminaire profiles (30% of images) add realistic factory lighting patterns. HDRI environment maps provide contextual reflections and backgrounds.
 
 **Materials** define visual appearance of gauge components. Housing materials include stainless steel variants, plastics, aluminum, brass, and rusty metal with procedural roughness. Glass covers are clean (70%) or scratched (30%). Needle shapes follow industrial standards: knife (70%), lollipop (15%), line (10%), spade (5%).
 
-**Geometry** encompasses 42 scale configurations spanning pressure (bar, kPa, PSI), electrical (V, A), temperature (degC), and speed (RPM, km/h) measurements. Sweep angles range from 90 deg to 320 deg; most use 270 deg clockwise with counter-clockwise variants. Color zones (35%) and dual scales (15%) add visual diversity.
+**Geometry** encompasses 42 scale configurations spanning pressure (bar, kPa, PSI), electrical (V, A), temperature (°C), and speed (RPM, km/h) measurements. Sweep angles range from 90° to 320°; most use 270° clockwise with counter-clockwise variants. Color zones (35%) and dual scales (15%) add visual diversity.
 
 **Weathering** applies procedural aging via shader nodes: edge wear revealing bare metal, surface scratches, oil stains, and glass fingerprints simulate real industrial equipment in service.
 
-**Post-processing** simulates camera characteristics: film grain (ISO 200-1600 equivalent), JPEG compression (quality 60-95), blur, vignette, chromatic aberration, and barrel distortion (40% of images).
+**Post-processing** simulates camera characteristics: film grain (ISO 200–1600 equivalent), JPEG compression (quality 60–95), blur, vignette, chromatic aberration, and barrel distortion (40% of images).
 
 ---
 
@@ -157,11 +157,11 @@ Per-image metadata records all 97 DR parameter values, enabling fine-grained abl
 
 ### 3.4 Dataset Statistics
 
-SynthGauge contains 9,000 images split 7,000/1,000/1,000 for train/val/test. All images are 640x640 JPEG.
+SynthGauge contains 9,000 images split 7,000/1,000/1,000 for train/val/test. All images are 640×640 JPEG.
 
 **Instrument distribution:** Manometers 34%, voltmeters 30%, ammeters 30%, thermometers 2.5%, tachometers 1.5%, speedometers 1%, other 1%.
 
-**Bounding box statistics:** Mean width 445px, mean height 449px, gauge coverage 55-75% of frame.
+**Bounding box statistics:** Mean width 445px, mean height 449px, gauge coverage 55–75% of frame.
 
 **Reading distribution:** Mean 0.50, range [0.02, 0.98], approximately uniform.
 
