@@ -6,10 +6,12 @@ readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "albumentations>=2.0.8",
+    "huggingface-hub>=1.8.0",
     "kagglehub>=0.4.2",
     "matplotlib>=3.10.8",
     "torch==2.10.0+cu128",
     "torchvision==0.25.0+cu128",
+    "ultralytics>=8.3.0",
 ]
 
 [tool.uv.sources]

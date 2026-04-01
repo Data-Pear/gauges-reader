@@ -1,37 +1,44 @@
 dataset:
-  name: endava_synthetic
+  name: synthetic-analog-gauges
 
 paths:
-  raw_ds_path: data/raw
+  raw_ds_path: data/raw/synthetic-analog-gauges
   processed_ds_path: data/processed
 
-  train_inst_coco: train__inst_coco.json
-  val_inst_coco: val__inst_coco.json
-  train_kpts_coco: train__kpts_coco.json
-  val_kpts_coco: val__kpts_coco.json
+  train_inst_coco: annotations/instances_train.json
+  val_inst_coco: annotations/instances_val.json
+  test_inst_coco: annotations/instances_test.json
 
-  train_det_kp_output_json: data/processed/train_det_kp.jsonl
-  val_det_kp_output_json: data/processed/val_det_kp.jsonl
+  train_kpts_coco: annotations/instances_train.json
+  val_kpts_coco: annotations/instances_val.json
+  test_kpts_coco: annotations/instances_test.json
 
-  weights_dir_det_kp: models/weights/det_kp
+  train_det_kp_output_json: data/processed/synthetic-analog-gauges_det_kp/train_det_kp.jsonl
+  val_det_kp_output_json: data/processed/synthetic-analog-gauges_det_kp/val_det_kp.jsonl
+  test_det_kp_output_json: data/processed/synthetic-analog-gauges_det_kp/test_det_kp.jsonl
+
+  weights_dir_det_kp: models/weights/det_kp/synthetic-analog-gauges
+
+  yolo_data_yaml: configs/synthgauge_yolo_data.yaml
+  yolo_weights_dir: models/weights/det_yolov8n/synthetic-analog-gauges
 
 keypoints_target:
-  category_name: face_plate
+  category_name: gauge
   names:
-    - dial_max
-    - dial_min
-    - dial_center
-    - dial_tip
+    - center
+    - needle_tip
+    - scale_start
+    - scale_end
   num_keypoints: 4
   format: coco_xyv
 
 detector_target:
-  category_name: face_plate
+  category_name: gauge
   num_classes: 1
 
 transforms_det_kp:
   backend: albumentations
-  img_size: 256
+  img_size: 640
   bbox_format: pascal_voc
   clip: true
   min_visibility: 0.0
@@ -46,16 +53,36 @@ transforms_det_kp:
 
 training_det_kp:
   device: cuda
-  epochs: 50
-  batch_size: 8
+  epochs: 100
+  batch_size: 16
   num_workers: 4
-  lr: 1e-4
+  lr: 1e-3
   weight_decay: 1e-4
+  optimizer: adamw
+  scheduler: cosine
   amp: true
   seed: 42
-  pretrained_coco: false
+  pretrained_coco: true
 
   best_metric: kpt_mae
   pck_thr: 0.05
   score_thr: 0.3
   log_every: 50
+
+detection_experiment:
+  framework: ultralytics
+  model: yolov8n
+  pretrained: coco
+  input_size: 640
+  training:
+    epochs: 100
+    batch_size: 16
+    optimizer: AdamW
+    lr0: 1.0e-3
+    lr_scheduler: cosine
+  evaluation:
+    metrics:
+      - "precision"
+      - "recall"
+      - "mAP@0.5"
+      - "mAP@0.5:0.95"

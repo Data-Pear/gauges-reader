@@ -1,0 +1,40 @@
+dataset:
+  name: synthetic-analog-gauges
+  category_name: gauge
+
+paths:
+  raw_ds_path: data/raw/synthetic-analog-gauges
+  processed_ds_path: data/processed
+
+  train_inst_coco: annotations/instances_train.json
+  val_inst_coco: annotations/instances_val.json
+  test_inst_coco: annotations/instances_test.json
+
+  yolo_dataset_root: data/processed/synthetic-analog-gauges_det_yolo
+  yolo_data_yaml: configs/synthgauge_det_yolo_data.yaml
+  weights_dir_det: models/weights/synthetic-analog-gauges/det_yolov8n
+
+model:
+  name: yolov8n.pt
+  pretrained: true
+  imgsz: 640
+
+training:
+  device: cuda
+  epochs: 100
+  batch_size: 16
+  num_workers: 4
+  optimizer: AdamW
+  lr0: 1.0e-3
+  weight_decay: 1.0e-4
+  lr_scheduler: cosine
+  seed: 42
+
+evaluation:
+  split: test
+  score_thr: 0.25
+  metrics:
+    - "precision"
+    - "recall"
+    - "mAP@0.5"
+    - "mAP@0.5:0.95"

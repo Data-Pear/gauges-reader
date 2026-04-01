@@ -1,0 +1,6 @@
+path: C:\Users\ek2kk\gauges-reader\data\raw\synthetic-analog-gauges\images
+train: train
+val: val
+names:
+  0: gauge
+test: test

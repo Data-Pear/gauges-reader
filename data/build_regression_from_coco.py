@@ -4,8 +4,9 @@ import argparse
 import json
 import re
 import sys
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
@@ -18,17 +19,98 @@ def _read_json(path: Path) -> Dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+@dataclass(frozen=True)
+class RegressionLayout:
+    train_coco: Path
+    val_coco: Path
+    test_coco: Optional[Path]
+    images_root: Path
+
+
 def _required_files_from_cfg(paths_cfg: Dict[str, Any]) -> Tuple[str, str]:
-    return (
-        str(paths_cfg["train_inst_coco"]),
-        str(paths_cfg["val_inst_coco"]),
+    return str(paths_cfg["train_inst_coco"]), str(paths_cfg["val_inst_coco"])
+
+
+def _optional_test_file_from_cfg(paths_cfg: Dict[str, Any]) -> Optional[str]:
+    rel = paths_cfg.get("test_inst_coco")
+    if rel is None:
+        return None
+    return str(rel)
+
+
+def _infer_test_relpaths(train_rel: str, val_rel: str) -> List[str]:
+    candidates: List[str] = []
+
+    for src, old in [(train_rel, "train"), (val_rel, "val")]:
+        if old in src:
+            repl = src.replace(old, "test", 1)
+            if repl not in candidates:
+                candidates.append(repl)
+    return candidates
+
+
+def _resolve_regression_layout(
+    dataset_dir: Path,
+    required_files: Tuple[str, str],
+    optional_test_file: Optional[str],
+) -> Optional[RegressionLayout]:
+    cfg_train_rel, cfg_val_rel = required_files
+    cfg_train_rel_norm = cfg_train_rel.replace("\\", "/").lower()
+    cfg_images_root = dataset_dir
+    if cfg_train_rel_norm.startswith("annotations/"):
+        candidate_images_root = dataset_dir / "images"
+        if candidate_images_root.exists():
+            cfg_images_root = candidate_images_root
+
+    # Endava-like layout:
+    #   ds/train__inst_coco.json, ds/val__inst_coco.json, file_name starts with "data/..."
+    cfg_test_path: Optional[Path] = None
+    if optional_test_file:
+        candidate = dataset_dir / optional_test_file
+        if candidate.exists():
+            cfg_test_path = candidate
+    else:
+        for rel in _infer_test_relpaths(cfg_train_rel, cfg_val_rel):
+            candidate = dataset_dir / rel
+            if candidate.exists():
+                cfg_test_path = candidate
+                break
+
+    cfg_layout = RegressionLayout(
+        train_coco=dataset_dir / cfg_train_rel,
+        val_coco=dataset_dir / cfg_val_rel,
+        test_coco=cfg_test_path,
+        images_root=cfg_images_root,
     )
+    if cfg_layout.train_coco.exists() and cfg_layout.val_coco.exists():
+        return cfg_layout
+
+    # HF synthetic-analog-gauges layout:
+    #   ds/annotations/instances_train.json, ds/annotations/instances_val.json, [instances_test.json]
+    #   ds/images/{train,val,test}/...
+    hf_test = dataset_dir / "annotations" / "instances_test.json"
+    hf_layout = RegressionLayout(
+        train_coco=dataset_dir / "annotations" / "instances_train.json",
+        val_coco=dataset_dir / "annotations" / "instances_val.json",
+        test_coco=hf_test if hf_test.exists() else None,
+        images_root=dataset_dir / "images",
+    )
+    if hf_layout.train_coco.exists() and hf_layout.val_coco.exists():
+        return hf_layout
+
+    return None
 
 
-def _is_dataset_dir(path: Path, required_files: Tuple[str, str]) -> bool:
+def _is_dataset_dir(
+    path: Path,
+    required_files: Tuple[str, str],
+    optional_test_file: Optional[str],
+) -> bool:
     if not path.exists() or not path.is_dir():
         return False
-    return all((path / name).exists() for name in required_files)
+    return (
+        _resolve_regression_layout(path, required_files, optional_test_file) is not None
+    )
 
 
 def _dataset_sort_key(path: Path) -> Tuple[int, ...]:
@@ -53,8 +135,12 @@ def _resolve_raw_base(cfg: Dict[str, Any], raw_root_arg: str | None) -> Path:
     return cfg_raw
 
 
-def _discover_dataset_dirs(raw_base: Path, required_files: Tuple[str, str]) -> List[Path]:
-    if _is_dataset_dir(raw_base, required_files):
+def _discover_dataset_dirs(
+    raw_base: Path,
+    required_files: Tuple[str, str],
+    optional_test_file: Optional[str],
+) -> List[Path]:
+    if _is_dataset_dir(raw_base, required_files, optional_test_file):
         return [raw_base]
 
     if not raw_base.exists():
@@ -66,7 +152,7 @@ def _discover_dataset_dirs(raw_base: Path, required_files: Tuple[str, str]) -> L
 
     candidates: List[Path] = []
     for child in raw_base.iterdir():
-        if _is_dataset_dir(child, required_files):
+        if _is_dataset_dir(child, required_files, optional_test_file):
             candidates.append(child.resolve())
 
     candidates.sort(key=_dataset_sort_key)
@@ -95,6 +181,59 @@ def _select_dataset_dirs(candidates: List[Path], dataset_arg: str) -> List[Path]
     return selected
 
 
+def _extract_numeric_value(ann: Dict[str, Any], value_key: str) -> Optional[float]:
+    direct = ann.get(value_key)
+    if isinstance(direct, (int, float)):
+        return float(direct)
+
+    attrs = ann.get("attributes")
+    if isinstance(attrs, dict):
+        nested = attrs.get(value_key)
+        if isinstance(nested, (int, float)):
+            return float(nested)
+
+    return None
+
+
+def _find_category_id(coco: Dict[str, Any], category_name: str) -> Optional[int]:
+    for cat in coco.get("categories", []):
+        if cat.get("name") == category_name and isinstance(cat.get("id"), int):
+            return int(cat["id"])
+    return None
+
+
+def _annotation_matches_category(
+    ann: Dict[str, Any],
+    category_name: str,
+    category_id: Optional[int],
+) -> bool:
+    if ann.get("category_name") == category_name:
+        return True
+    if category_id is not None and ann.get("category_id") == category_id:
+        return True
+    return False
+
+
+def _default_output_paths(
+    paths_cfg: Dict[str, Any],
+    selected_dirs: List[Path],
+) -> Tuple[Path, Path, Path]:
+    processed_root = Path(str(paths_cfg.get("processed_ds_path", "data/processed"))).resolve()
+    dataset_label = "__".join(d.name for d in selected_dirs)
+    out_dir = processed_root / f"{dataset_label}_reg"
+
+    train_name = Path(str(paths_cfg["train_reg_output_json"])).name
+    val_name = Path(str(paths_cfg["val_reg_output_json"])).name
+    test_cfg = paths_cfg.get("test_reg_output_json")
+    if test_cfg is not None:
+        test_name = Path(str(test_cfg)).name
+    elif "val" in val_name:
+        test_name = val_name.replace("val", "test", 1)
+    else:
+        test_name = "test_regression.jsonl"
+    return out_dir / train_name, out_dir / val_name, out_dir / test_name
+
+
 def build_pairs_from_coco(
     coco: Dict[str, Any],
     images_root: Path,
@@ -114,17 +253,19 @@ def build_pairs_from_coco(
         if isinstance(img_id, int) and isinstance(fn, str) and fn:
             id_to_file[img_id] = fn
 
+    target_category_id = _find_category_id(coco, category_name)
+
     # collect values per image_id from target category annotations
     values_by_img: Dict[int, List[float]] = {}
     for ann in coco.get("annotations", []):
-        if ann.get("category_name") != category_name:
+        if not _annotation_matches_category(ann, category_name, target_category_id):
             continue
 
         img_id = ann.get("image_id")
-        v = ann.get(value_key)
+        v = _extract_numeric_value(ann, value_key)
 
-        if isinstance(img_id, int) and isinstance(v, (int, float)):
-            values_by_img.setdefault(img_id, []).append(float(v))
+        if isinstance(img_id, int) and v is not None:
+            values_by_img.setdefault(img_id, []).append(v)
 
     pairs: List[Tuple[str, float]] = []
     missing_target = 0
@@ -190,8 +331,21 @@ def _parse_args() -> argparse.Namespace:
         default="all",
         help="Dataset selection mode: all | auto | <folder_name>.",
     )
+    ap.add_argument(
+        "--category-name",
+        type=str,
+        default=None,
+        help="Override regression_target.category_name from config.",
+    )
+    ap.add_argument(
+        "--value-key",
+        type=str,
+        default=None,
+        help="Override regression_target.value_key from config.",
+    )
     ap.add_argument("--out-train", type=str, default=None)
     ap.add_argument("--out-val", type=str, default=None)
+    ap.add_argument("--out-test", type=str, default=None)
     return ap.parse_args()
 
 
@@ -201,23 +355,26 @@ def main() -> None:
     paths_cfg = cfg["paths"]
 
     required_files = _required_files_from_cfg(paths_cfg)
+    optional_test_file = _optional_test_file_from_cfg(paths_cfg)
     raw_base = _resolve_raw_base(cfg, args.raw_root)
-    candidates = _discover_dataset_dirs(raw_base, required_files)
+    candidates = _discover_dataset_dirs(raw_base, required_files, optional_test_file)
     selected_dirs = _select_dataset_dirs(candidates, args.dataset)
 
-    train_out = (
-        Path(args.out_train).resolve()
-        if args.out_train
-        else Path(paths_cfg["train_reg_output_json"]).resolve()
-    )
-    val_out = (
-        Path(args.out_val).resolve()
-        if args.out_val
-        else Path(paths_cfg["val_reg_output_json"]).resolve()
-    )
+    if args.out_train:
+        train_out = Path(args.out_train).resolve()
+    else:
+        train_out, _, _ = _default_output_paths(paths_cfg, selected_dirs)
+    if args.out_val:
+        val_out = Path(args.out_val).resolve()
+    else:
+        _, val_out, _ = _default_output_paths(paths_cfg, selected_dirs)
+    if args.out_test:
+        test_out = Path(args.out_test).resolve()
+    else:
+        _, _, test_out = _default_output_paths(paths_cfg, selected_dirs)
 
-    category_name = cfg["regression_target"]["category_name"]
-    value_key = cfg["regression_target"]["value_key"]
+    category_name = args.category_name or cfg["regression_target"]["category_name"]
+    value_key = args.value_key or cfg["regression_target"]["value_key"]
 
     print(f"[INFO] raw_base:     {raw_base}")
     print(f"[INFO] selected ds: {', '.join(d.name for d in selected_dirs)}")
@@ -226,23 +383,29 @@ def main() -> None:
     )
     print(f"[INFO] out_train:    {train_out}")
     print(f"[INFO] out_val:      {val_out}")
+    print(f"[INFO] out_test:     {test_out}")
 
     all_train_pairs: List[Tuple[str, float]] = []
     all_val_pairs: List[Tuple[str, float]] = []
+    all_test_pairs: List[Tuple[str, float]] = []
+    has_test_split = False
 
     for ds_dir in selected_dirs:
-        images_root = ds_dir
-        train_coco_path = ds_dir / paths_cfg["train_inst_coco"]
-        val_coco_path = ds_dir / paths_cfg["val_inst_coco"]
-
-        if not train_coco_path.exists():
-            raise FileNotFoundError(f"train COCO not found: {train_coco_path}")
-        if not val_coco_path.exists():
-            raise FileNotFoundError(f"val COCO not found: {val_coco_path}")
+        layout = _resolve_regression_layout(ds_dir, required_files, optional_test_file)
+        if layout is None:
+            raise FileNotFoundError(
+                f"Could not resolve COCO layout for dataset: {ds_dir}\n"
+                f"Expected either: {required_files[0]} / {required_files[1]} "
+                "or annotations/instances_train.json / annotations/instances_val.json"
+            )
+        images_root = layout.images_root
+        train_coco_path = layout.train_coco
+        val_coco_path = layout.val_coco
 
         print(f"[INFO] processing:  {ds_dir}")
         print(f"[INFO] train_coco:   {train_coco_path}")
         print(f"[INFO] val_coco:     {val_coco_path}")
+        print(f"[INFO] images_root:  {images_root}")
 
         train_coco = _read_json(train_coco_path)
         train_pairs = build_pairs_from_coco(
@@ -258,10 +421,27 @@ def main() -> None:
         all_val_pairs.extend(val_pairs)
         print(f"[OK] val pairs from {ds_dir.name}:   {len(val_pairs)}")
 
+        if layout.test_coco is not None:
+            has_test_split = True
+            print(f"[INFO] test_coco:    {layout.test_coco}")
+            test_coco = _read_json(layout.test_coco)
+            test_pairs = build_pairs_from_coco(
+                test_coco, images_root, category_name, value_key
+            )
+            all_test_pairs.extend(test_pairs)
+            print(f"[OK] test pairs from {ds_dir.name}:  {len(test_pairs)}")
+        else:
+            print(f"[INFO] no test split for {ds_dir.name}, skipping.")
+
     write_jsonl(all_train_pairs, train_out)
     write_jsonl(all_val_pairs, val_out)
     print(f"[OK] wrote {len(all_train_pairs)} samples -> {train_out}")
     print(f"[OK] wrote {len(all_val_pairs)} samples -> {val_out}")
+    if has_test_split:
+        write_jsonl(all_test_pairs, test_out)
+        print(f"[OK] wrote {len(all_test_pairs)} samples -> {test_out}")
+    else:
+        print("[INFO] test output not written (no test COCO split found).")
 
 
 if __name__ == "__main__":

@@ -1,0 +1,52 @@
+dataset:
+  name: synthetic-analog-gauges
+  category_name: gauge
+
+paths:
+  raw_ds_path: data/raw/synthetic-analog-gauges
+  processed_ds_path: data/processed
+
+  train_inst_coco: annotations/instances_train.json
+  val_inst_coco: annotations/instances_val.json
+  test_inst_coco: annotations/instances_test.json
+
+  yolo_dataset_root: data/processed/synthetic-analog-gauges_kp_yolo_pose
+  yolo_data_yaml: configs/synthgauge_kp_yolo_data.yaml
+  weights_dir_kp: models/weights/synthetic-analog-gauges/kp_yolov8n-pose
+
+keypoints:
+  names:
+    - center
+    - needle_tip
+    - scale_start
+    - scale_end
+  num_keypoints: 4
+  flip_idx: [0, 1, 2, 3]
+
+model:
+  name: yolov8n-pose.pt
+  pretrained: true
+  imgsz: 640
+
+training:
+  device: cuda
+  epochs: 100
+  batch_size: 16
+  num_workers: 4
+  optimizer: AdamW
+  lr0: 1.0e-3
+  weight_decay: 1.0e-4
+  lr_scheduler: cosine
+  seed: 42
+
+evaluation:
+  split: test
+  score_thr: 0.25
+  metrics:
+    - "pose_precision"
+    - "pose_recall"
+    - "pose_mAP@0.5"
+    - "pose_mAP@0.5:0.95"
+    - "PCK@0.05"
+    - "PCK@0.10"
+    - "mean_angular_error_deg"

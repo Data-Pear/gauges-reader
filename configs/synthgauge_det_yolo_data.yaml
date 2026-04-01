@@ -1,0 +1,6 @@
+path: C:\Users\ek2kk\gauges-reader\data\processed\synthetic-analog-gauges_det_yolo\images
+train: train
+val: val
+names:
+  0: gauge
+test: test

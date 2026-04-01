@@ -38,7 +38,20 @@ logs/
 runs/
 checkpoints/
 outputs/
-models/weights/det_kp/
+models/weights/
+*.pt
+*.pth
+*.ckpt
+
+# Local training/eval artifacts
+data/processed/
+!data/processed/.gitkeep
+
+# Generated YOLO data files (can be rebuilt from config + raw dataset)
+configs/synthgauge_*_data.yaml
+
+# Local tool/cache dirs
+.uv-cache/
 
 # OS / editor
 .DS_Store
@@ -50,4 +63,4 @@ Thumbs.db
 *.log
 *.tmp
 
-data/raw
+data/raw/

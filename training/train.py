@@ -10,12 +10,12 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 def _parse_args() -> tuple[argparse.Namespace, list[str]]:
     ap = argparse.ArgumentParser(
-        description="Unified training entrypoint for regression and det+keypoints pipelines."
+        description="Unified training entrypoint for detection, keypoints, and regression."
     )
     ap.add_argument(
         "--task",
         required=True,
-        choices=["regression", "det_kp"],
+        choices=["detection", "keypoints", "regression", "det_yolo", "det_kp"],
         help="Training pipeline to run.",
     )
     ap.add_argument(
@@ -33,9 +33,14 @@ def _task_defaults(task: str) -> tuple[Path, Path]:
             PROJECT_ROOT / "training" / "train_regression.py",
             PROJECT_ROOT / "configs" / "config_regression.yaml",
         )
+    if task in ("keypoints", "det_kp"):
+        return (
+            PROJECT_ROOT / "training" / "train_keypoints_yolo_pose.py",
+            PROJECT_ROOT / "configs" / "config_keypoints.yaml",
+        )
     return (
-        PROJECT_ROOT / "training" / "train_det_kp.py",
-        PROJECT_ROOT / "configs" / "config_det_kp.yaml",
+        PROJECT_ROOT / "training" / "train_detection_yolo.py",
+        PROJECT_ROOT / "configs" / "config_detection.yaml",
     )
 
 

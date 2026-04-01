@@ -1,0 +1,14 @@
+path: C:\Users\ek2kk\gauges-reader\data\processed\synthetic-analog-gauges_kp_yolo_pose\images
+train: train
+val: val
+names:
+  0: gauge
+kpt_shape:
+- 4
+- 3
+flip_idx:
+- 0
+- 1
+- 2
+- 3
+test: test

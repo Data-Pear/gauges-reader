@@ -1,0 +1,28 @@
+dataset:
+  name: synthetic-analog-gauges
+
+paths:
+  dataset_root: data/raw/synthetic-analog-gauges
+  yolo_data_yaml: configs/synthgauge_yolo_data.yaml
+  weights_dir_det: models/weights/det_yolov8n/synthetic-analog-gauges
+
+detection:
+  framework: ultralytics
+  model: yolov8n.pt
+  pretrained: coco
+  imgsz: 640
+
+  training:
+    epochs: 100
+    batch: 16
+    optimizer: AdamW
+    lr0: 1.0e-3
+    cos_lr: true
+
+evaluation:
+  split: test
+  metrics:
+    - "precision"
+    - "recall"
+    - "mAP@0.5"
+    - "mAP@0.5:0.95"

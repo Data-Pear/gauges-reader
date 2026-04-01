@@ -172,6 +172,27 @@ def _resolve_path(paths: Dict[str, Any], primary: str, *fallbacks: str) -> Path:
     raise KeyError(f"Missing path key in config: {primary}")
 
 
+def _dataset_name(cfg: Dict[str, Any]) -> str:
+    dataset_cfg = cfg.get("dataset", {})
+    explicit = dataset_cfg.get("name")
+    if isinstance(explicit, str) and explicit.strip():
+        return explicit.strip()
+
+    raw_ds = str(cfg.get("paths", {}).get("raw_ds_path", "dataset")).rstrip("/\\")
+    return Path(raw_ds).name or "dataset"
+
+
+def _resolve_weights_dir(cfg: Dict[str, Any]) -> Path:
+    paths = cfg.get("paths", {})
+    explicit = paths.get("weights_dir_reg")
+    if explicit:
+        return Path(str(explicit)).resolve()
+
+    dataset_name = _dataset_name(cfg)
+    model_name = str(cfg.get("model", {}).get("backbone", "resnet18")).lower()
+    return Path("models/weights").resolve() / dataset_name / f"reg_{model_name}"
+
+
 def main() -> None:
     args = _parse_args()
     cfg = load_config(args.config)
@@ -229,7 +250,7 @@ def main() -> None:
     if not val_index.exists():
         raise FileNotFoundError(f"val index not found: {val_index}")
 
-    weights_dir = Path(paths.get("weights_dir_reg", "models/weights/reg")).resolve()
+    weights_dir = _resolve_weights_dir(cfg)
 
     logger.info(f"device={device} amp={amp}")
     logger.info(f"train_index={train_index}")

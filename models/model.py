@@ -7,7 +7,9 @@ import torch
 import torch.nn as nn
 import torchvision.models as tvm
 
-BackboneName = Literal["resnet34", "resnet50", "convnext_tiny", "mobilenet_v3_large"]
+BackboneName = Literal[
+    "resnet18", "resnet34", "resnet50", "convnext_tiny", "mobilenet_v3_large"
+]
 
 
 @dataclass
@@ -33,7 +35,18 @@ class GaugeRegressor(nn.Module):
         super().__init__()
         self.cfg = cfg
 
-        if cfg.backbone == "resnet34":
+        if cfg.backbone == "resnet18":
+            weights = tvm.ResNet18_Weights.DEFAULT if cfg.pretrained else None
+            m = tvm.resnet18(weights=weights)
+            in_features = m.fc.in_features
+            m.fc = nn.Identity()
+            self.backbone = m
+            self.head = nn.Sequential(
+                nn.Dropout(cfg.dropout) if cfg.dropout > 0 else nn.Identity(),
+                nn.Linear(in_features, 1),
+            )
+
+        elif cfg.backbone == "resnet34":
             weights = tvm.ResNet34_Weights.DEFAULT if cfg.pretrained else None
             m = tvm.resnet34(weights=weights)
             in_features = m.fc.in_features

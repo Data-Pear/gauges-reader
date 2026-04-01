@@ -63,11 +63,13 @@ class RegressionMeter:
 
     def compute(self) -> Dict[str, float]:
         if self._n == 0:
+            drr_key = f"drr@{self.tol:.2f}" if self.tol is not None else None
             return {
                 "mae": float("nan"),
                 "rmse": float("nan"),
                 "r2": float("nan"),
                 **({"acc@tol": float("nan")} if self.tol is not None else {}),
+                **({drr_key: float("nan")} if drr_key is not None else {}),
             }
 
         mae = self._sum_abs / self._n
@@ -83,7 +85,9 @@ class RegressionMeter:
         out = {"mae": float(mae), "rmse": float(rmse), "r2": float(r2)}
 
         if self.tol is not None:
-            out["acc@tol"] = float(self._sum_correct / self._n)
+            acc = float(self._sum_correct / self._n)
+            out["acc@tol"] = acc
+            out[f"drr@{self.tol:.2f}"] = acc
 
         return out
 

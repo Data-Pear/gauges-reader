@@ -1,21 +1,23 @@
 dataset:
-  name: endava_synthetic
+  name: synthetic-analog-gauges
 
 paths:
-  raw_ds_path: data/raw
+  raw_ds_path: data/raw/synthetic-analog-gauges
   processed_ds_path: data/processed
 
-  train_inst_coco: train__inst_coco.json
-  val_inst_coco: val__inst_coco.json
+  train_inst_coco: annotations/instances_train.json
+  val_inst_coco: annotations/instances_val.json
+  test_inst_coco: annotations/instances_test.json
 
-  train_reg_output_json: data/processed/train_regression.jsonl
-  val_reg_output_json: data/processed/val_regression.jsonl
+  train_reg_output_json: data/processed/synthetic-analog-gauges_reg/train_regression.jsonl
+  val_reg_output_json: data/processed/synthetic-analog-gauges_reg/val_regression.jsonl
+  test_reg_output_json: data/processed/synthetic-analog-gauges_reg/test_regression.jsonl
 
-  weights_dir_reg: models/weights/reg
+  weights_dir_reg: models/weights/synthetic-analog-gauges/reg_resnet18
 
 regression_target:
-  category_name: dial
-  value_key: synth_dial_value
+  category_name: gauge
+  value_key: reading_normalized
 
 transforms:
   img_size: 256
@@ -34,23 +36,30 @@ transforms:
     blur_p: 0.2
 
 model:
-  backbone: convnext_tiny
+  backbone: resnet18
   pretrained: true
   dropout: 0.1
 
 training:
   device: cuda
-  epochs: 30
+  epochs: 50
   batch_size: 32
   num_workers: 4
   lr: 3e-4
   weight_decay: 1e-4
+  optimizer: adamw
   amp: true
   seed: 42
 
-  loss: huber
-  huber_delta: 0.05
+  loss: mse
 
   best_metric: mae
-  tol: 0.05
+  tol: 0.02
   log_every: 50
+
+evaluation:
+  split: test
+  metrics:
+    - mae
+    - drr@0.02
+  drr_tolerance: 0.02

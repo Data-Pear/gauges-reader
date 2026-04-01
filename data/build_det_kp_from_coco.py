@@ -23,6 +23,17 @@ class TargetSpec:
     num_keypoints: int
 
 
+@dataclass(frozen=True)
+class DetKpLayout:
+    train_inst: Path
+    val_inst: Path
+    train_kpts: Path
+    val_kpts: Path
+    test_inst: Optional[Path]
+    test_kpts: Optional[Path]
+    images_root: Path
+
+
 def _read_json(path: Path) -> Dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
 
@@ -36,10 +47,123 @@ def _required_files_from_cfg(paths_cfg: Dict[str, Any]) -> Tuple[str, str, str, 
     )
 
 
-def _is_dataset_dir(path: Path, required_files: Tuple[str, str, str, str]) -> bool:
+def _optional_test_files_from_cfg(paths_cfg: Dict[str, Any]) -> Tuple[Optional[str], Optional[str]]:
+    inst = paths_cfg.get("test_inst_coco")
+    kpts = paths_cfg.get("test_kpts_coco")
+    inst_rel = str(inst) if inst is not None else None
+    kpts_rel = str(kpts) if kpts is not None else None
+    return inst_rel, kpts_rel
+
+
+def _infer_test_relpaths(train_rel: str, val_rel: str) -> List[str]:
+    candidates: List[str] = []
+    for src, old in [(train_rel, "train"), (val_rel, "val")]:
+        if old in src:
+            repl = src.replace(old, "test", 1)
+            if repl not in candidates:
+                candidates.append(repl)
+    return candidates
+
+
+def _resolve_det_kp_layout(
+    dataset_dir: Path,
+    required_files: Tuple[str, str, str, str],
+    optional_test_files: Tuple[Optional[str], Optional[str]],
+) -> Optional[DetKpLayout]:
+    (
+        train_inst_rel,
+        val_inst_rel,
+        train_kpts_rel,
+        val_kpts_rel,
+    ) = required_files
+    optional_test_inst, optional_test_kpts = optional_test_files
+    train_inst_rel_norm = train_inst_rel.replace("\\", "/").lower()
+    cfg_images_root = dataset_dir
+    if train_inst_rel_norm.startswith("annotations/"):
+        candidate_images_root = dataset_dir / "images"
+        if candidate_images_root.exists():
+            cfg_images_root = candidate_images_root
+
+    # Endava-like layout with separate inst/kpts COCO files.
+    cfg_test_inst: Optional[Path] = None
+    cfg_test_kpts: Optional[Path] = None
+
+    if optional_test_inst and optional_test_kpts:
+        test_inst_candidate = dataset_dir / optional_test_inst
+        test_kpts_candidate = dataset_dir / optional_test_kpts
+        if test_inst_candidate.exists() and test_kpts_candidate.exists():
+            cfg_test_inst = test_inst_candidate
+            cfg_test_kpts = test_kpts_candidate
+    else:
+        inferred_inst_rels = _infer_test_relpaths(train_inst_rel, val_inst_rel)
+        inferred_kpts_rels = _infer_test_relpaths(train_kpts_rel, val_kpts_rel)
+
+        inferred_inst_path: Optional[Path] = None
+        inferred_kpts_path: Optional[Path] = None
+        for rel in inferred_inst_rels:
+            p = dataset_dir / rel
+            if p.exists():
+                inferred_inst_path = p
+                break
+        for rel in inferred_kpts_rels:
+            p = dataset_dir / rel
+            if p.exists():
+                inferred_kpts_path = p
+                break
+
+        if inferred_inst_path is not None and inferred_kpts_path is not None:
+            cfg_test_inst = inferred_inst_path
+            cfg_test_kpts = inferred_kpts_path
+
+    cfg_layout = DetKpLayout(
+        train_inst=dataset_dir / train_inst_rel,
+        val_inst=dataset_dir / val_inst_rel,
+        train_kpts=dataset_dir / train_kpts_rel,
+        val_kpts=dataset_dir / val_kpts_rel,
+        test_inst=cfg_test_inst,
+        test_kpts=cfg_test_kpts,
+        images_root=cfg_images_root,
+    )
+    if all(
+        p.exists()
+        for p in [
+            cfg_layout.train_inst,
+            cfg_layout.val_inst,
+            cfg_layout.train_kpts,
+            cfg_layout.val_kpts,
+        ]
+    ):
+        return cfg_layout
+
+    # HF synthetic-analog-gauges layout:
+    # keypoints are stored in the same instances_*.json files.
+    hf_train = dataset_dir / "annotations" / "instances_train.json"
+    hf_val = dataset_dir / "annotations" / "instances_val.json"
+    hf_test = dataset_dir / "annotations" / "instances_test.json"
+    if hf_train.exists() and hf_val.exists():
+        return DetKpLayout(
+            train_inst=hf_train,
+            val_inst=hf_val,
+            train_kpts=hf_train,
+            val_kpts=hf_val,
+            test_inst=hf_test if hf_test.exists() else None,
+            test_kpts=hf_test if hf_test.exists() else None,
+            images_root=dataset_dir / "images",
+        )
+
+    return None
+
+
+def _is_dataset_dir(
+    path: Path,
+    required_files: Tuple[str, str, str, str],
+    optional_test_files: Tuple[Optional[str], Optional[str]],
+) -> bool:
     if not path.exists() or not path.is_dir():
         return False
-    return all((path / name).exists() for name in required_files)
+    return (
+        _resolve_det_kp_layout(path, required_files, optional_test_files) is not None
+    )
 
 
 def _dataset_sort_key(path: Path) -> Tuple[int, ...]:
@@ -66,9 +190,11 @@ def _resolve_raw_base(cfg: Dict[str, Any], raw_root_arg: str | None) -> Path:
 
 
 def _discover_dataset_dirs(
-    raw_base: Path, required_files: Tuple[str, str, str, str]
+    raw_base: Path,
+    required_files: Tuple[str, str, str, str],
+    optional_test_files: Tuple[Optional[str], Optional[str]],
 ) -> List[Path]:
-    if _is_dataset_dir(raw_base, required_files):
+    if _is_dataset_dir(raw_base, required_files, optional_test_files):
         return [raw_base]
 
     if not raw_base.exists():
@@ -80,14 +206,20 @@ def _discover_dataset_dirs(
 
     candidates: List[Path] = []
     for child in raw_base.iterdir():
-        if _is_dataset_dir(child, required_files):
+        if _is_dataset_dir(child, required_files, optional_test_files):
             candidates.append(child.resolve())
 
     candidates.sort(key=_dataset_sort_key)
     return candidates
 
 
-def _select_dataset_dirs(candidates: List[Path], dataset_arg: str) -> List[Path]:
+def _select_dataset_dirs(
+    candidates: List[Path],
+    dataset_arg: str,
+    raw_base: Path,
+    required_files: Tuple[str, str, str, str],
+    optional_test_files: Tuple[Optional[str], Optional[str]],
+) -> List[Path]:
     if not candidates:
         raise FileNotFoundError(
             "No dataset directories with required COCO files were found."
@@ -101,12 +233,49 @@ def _select_dataset_dirs(candidates: List[Path], dataset_arg: str) -> List[Path]
 
     selected = [d for d in candidates if d.name == mode]
     if not selected:
+        requested_dir = raw_base / mode
+        if requested_dir.exists() and requested_dir.is_dir():
+            layout = _resolve_det_kp_layout(
+                requested_dir, required_files, optional_test_files
+            )
+            if layout is not None:
+                return [requested_dir.resolve()]
+
+            missing = [str(requested_dir / rel) for rel in required_files]
+            raise ValueError(
+                f"Dataset '{mode}' exists, but it is not det+kp-ready.\n"
+                "Missing required files:\n"
+                + "\n".join(f"  - {p}" for p in missing)
+                + "\nSupported layouts:\n"
+                "  - separate inst/kpts COCO files (Endava format)\n"
+                "  - annotations/instances_{train,val}.json with keypoints field (HF synthetic format)"
+            )
         available = ", ".join(d.name for d in candidates)
         raise ValueError(
             f"Dataset '{mode}' not found. Available: {available}. "
             "Use --dataset all|auto|<folder_name>."
         )
     return selected
+
+
+def _default_output_paths(
+    paths_cfg: Dict[str, Any],
+    selected_dirs: List[Path],
+) -> Tuple[Path, Path, Path]:
+    processed_root = Path(str(paths_cfg.get("processed_ds_path", "data/processed"))).resolve()
+    dataset_label = "__".join(d.name for d in selected_dirs)
+    out_dir = processed_root / f"{dataset_label}_det_kp"
+
+    train_name = Path(str(paths_cfg["train_det_kp_output_json"])).name
+    val_name = Path(str(paths_cfg["val_det_kp_output_json"])).name
+    test_cfg = paths_cfg.get("test_det_kp_output_json")
+    if test_cfg is not None:
+        test_name = Path(str(test_cfg)).name
+    elif "val" in val_name:
+        test_name = val_name.replace("val", "test", 1)
+    else:
+        test_name = "test_det_kp.jsonl"
+    return out_dir / train_name, out_dir / val_name, out_dir / test_name
 
 
 def _reindex_image_ids(records: List[Dict[str, Any]]) -> None:
@@ -118,6 +287,14 @@ def _find_category_id(categories: List[Dict[str, Any]], name: str) -> int:
     for c in categories:
         if c.get("name") == name and isinstance(c.get("id"), int):
             return int(c["id"])
+    # Fallback for datasets with a single category (e.g., gauge-only synthetic).
+    if len(categories) == 1 and isinstance(categories[0].get("id"), int):
+        only = categories[0]
+        only_name = str(only.get("name", "<unknown>"))
+        print(
+            f"[WARN] Category '{name}' not found; using only available category '{only_name}'."
+        )
+        return int(only["id"])
     raise ValueError(f"Category '{name}' not found in COCO categories.")
 
 
@@ -373,8 +550,27 @@ def _parse_args() -> argparse.Namespace:
         default="all",
         help="Dataset selection mode: all | auto | <folder_name>.",
     )
+    ap.add_argument(
+        "--category-name",
+        type=str,
+        default=None,
+        help="Override keypoints_target.category_name from config.",
+    )
+    ap.add_argument(
+        "--keypoint-names",
+        nargs="+",
+        default=None,
+        help="Override keypoint names (space-separated) in the same order as COCO keypoints.",
+    )
+    ap.add_argument(
+        "--num-keypoints",
+        type=int,
+        default=None,
+        help="Override keypoints_target.num_keypoints from config.",
+    )
     ap.add_argument("--out-train", type=str, default=None)
     ap.add_argument("--out-val", type=str, default=None)
+    ap.add_argument("--out-test", type=str, default=None)
     return ap.parse_args()
 
 
@@ -384,26 +580,83 @@ def main() -> None:
     paths_cfg = cfg["paths"]
 
     required_files = _required_files_from_cfg(paths_cfg)
+    optional_test_files = _optional_test_files_from_cfg(paths_cfg)
     raw_base = _resolve_raw_base(cfg, args.raw_root)
-    candidates = _discover_dataset_dirs(raw_base, required_files)
-    selected_dirs = _select_dataset_dirs(candidates, args.dataset)
+    candidates = _discover_dataset_dirs(raw_base, required_files, optional_test_files)
+    selected_dirs = _select_dataset_dirs(
+        candidates,
+        args.dataset,
+        raw_base,
+        required_files,
+        optional_test_files,
+    )
 
-    out_train = (
-        Path(args.out_train).resolve()
-        if args.out_train
-        else Path(paths_cfg["train_det_kp_output_json"]).resolve()
-    )
-    out_val = (
-        Path(args.out_val).resolve()
-        if args.out_val
-        else Path(paths_cfg["val_det_kp_output_json"]).resolve()
-    )
+    if args.out_train:
+        out_train = Path(args.out_train).resolve()
+    else:
+        out_train, _, _ = _default_output_paths(paths_cfg, selected_dirs)
+    if args.out_val:
+        out_val = Path(args.out_val).resolve()
+    else:
+        _, out_val, _ = _default_output_paths(paths_cfg, selected_dirs)
+    if args.out_test:
+        out_test = Path(args.out_test).resolve()
+    else:
+        _, _, out_test = _default_output_paths(paths_cfg, selected_dirs)
+
+    layouts: Dict[Path, DetKpLayout] = {}
+    for ds_dir in selected_dirs:
+        layout = _resolve_det_kp_layout(ds_dir, required_files, optional_test_files)
+        if layout is None:
+            raise FileNotFoundError(f"Could not resolve det+kp layout for dataset: {ds_dir}")
+        layouts[ds_dir] = layout
+
+    # Synthetic-only convenience defaults.
+    is_single_hf_synth_layout = False
+    if len(selected_dirs) == 1:
+        only_layout = layouts[selected_dirs[0]]
+        is_single_hf_synth_layout = (
+            only_layout.train_inst.name == "instances_train.json"
+            and only_layout.train_kpts == only_layout.train_inst
+            and only_layout.images_root.name == "images"
+        )
 
     kp_cfg = cfg["keypoints_target"]
+    default_category = str(kp_cfg["category_name"])
+    default_names = list(kp_cfg["names"])
+    default_num_keypoints = int(kp_cfg["num_keypoints"])
+
+    category_name = (
+        args.category_name
+        or ("gauge" if is_single_hf_synth_layout else default_category)
+    )
+    keypoint_names = (
+        list(args.keypoint_names)
+        if args.keypoint_names
+        else (
+            ["center", "needle_tip", "scale_start", "scale_end"]
+            if is_single_hf_synth_layout
+            else default_names
+        )
+    )
+    if args.num_keypoints is not None:
+        num_keypoints = int(args.num_keypoints)
+    elif args.keypoint_names:
+        num_keypoints = len(keypoint_names)
+    elif is_single_hf_synth_layout:
+        num_keypoints = 4
+    else:
+        num_keypoints = default_num_keypoints
+
+    if len(keypoint_names) != num_keypoints:
+        raise ValueError(
+            f"num_keypoints={num_keypoints} does not match number of keypoint names={len(keypoint_names)}."
+        )
+
     target = TargetSpec(
-        category_name=str(kp_cfg["category_name"]),
-        keypoint_names=list(kp_cfg["names"]),
-        num_keypoints=int(kp_cfg["num_keypoints"]),
+        category_name=category_name,
+        keypoint_names=keypoint_names,
+        num_keypoints=num_keypoints,
     )
 
     print(f"[INFO] raw_base:     {raw_base}")
@@ -413,22 +666,32 @@ def main() -> None:
     )
     print(f"[INFO] out_train:    {out_train}")
     print(f"[INFO] out_val:      {out_val}")
+    print(f"[INFO] out_test:     {out_test}")
 
     all_train_records: List[Dict[str, Any]] = []
     all_val_records: List[Dict[str, Any]] = []
+    all_test_records: List[Dict[str, Any]] = []
+    has_test_split = False
 
     for ds_dir in selected_dirs:
-        images_root = ds_dir
-        train_inst = ds_dir / paths_cfg["train_inst_coco"]
-        val_inst = ds_dir / paths_cfg["val_inst_coco"]
-        train_kpts = ds_dir / paths_cfg["train_kpts_coco"]
-        val_kpts = ds_dir / paths_cfg["val_kpts_coco"]
-
-        for p in [train_inst, val_inst, train_kpts, val_kpts]:
-            if not p.exists():
-                raise FileNotFoundError(f"File not found: {p}")
+        layout = layouts[ds_dir]
+        images_root = layout.images_root
+        train_inst = layout.train_inst
+        val_inst = layout.val_inst
+        train_kpts = layout.train_kpts
+        val_kpts = layout.val_kpts
 
         print(f"[INFO] processing:  {ds_dir}")
+        print(f"[INFO] train_inst:   {train_inst}")
+        print(f"[INFO] train_kpts:   {train_kpts}")
+        print(f"[INFO] val_inst:     {val_inst}")
+        print(f"[INFO] val_kpts:     {val_kpts}")
+        if layout.test_inst is not None and layout.test_kpts is not None:
+            print(f"[INFO] test_inst:    {layout.test_inst}")
+            print(f"[INFO] test_kpts:    {layout.test_kpts}")
+        else:
+            print("[INFO] test split:   <none>")
+        print(f"[INFO] images_root:  {images_root}")
 
         inst_coco = _read_json(train_inst)
         kpts_coco = _read_json(train_kpts)
@@ -446,15 +709,31 @@ def main() -> None:
         all_val_records.extend(val_records)
         print(f"[OK] val records from {ds_dir.name}:   {len(val_records)}")
 
+        if layout.test_inst is not None and layout.test_kpts is not None:
+            has_test_split = True
+            inst_coco = _read_json(layout.test_inst)
+            kpts_coco = _read_json(layout.test_kpts)
+            test_records = build_det_kp_index(inst_coco, kpts_coco, images_root, target)
+            for rec in test_records:
+                rec["source_dataset"] = ds_dir.name
+            all_test_records.extend(test_records)
+            print(f"[OK] test records from {ds_dir.name}:  {len(test_records)}")
+
     # If combining multiple dataset folders, make image ids unique within each split.
     if len(selected_dirs) > 1:
         _reindex_image_ids(all_train_records)
         _reindex_image_ids(all_val_records)
+        _reindex_image_ids(all_test_records)
 
     _write_jsonl(all_train_records, out_train)
     _write_jsonl(all_val_records, out_val)
     print(f"[OK] wrote {len(all_train_records)} train records -> {out_train}")
     print(f"[OK] wrote {len(all_val_records)} val records   -> {out_val}")
+    if has_test_split:
+        _write_jsonl(all_test_records, out_test)
+        print(f"[OK] wrote {len(all_test_records)} test records  -> {out_test}")
+    else:
+        print("[INFO] test output not written (no test COCO split found).")
 
 
 if __name__ == "__main__":
