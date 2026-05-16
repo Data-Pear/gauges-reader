@@ -54,7 +54,7 @@ def _resolve_device(requested: str, cfg_device: str) -> str:
 
 def _resolve_weights_path(cfg: Dict[str, Any], weights_arg: Optional[str]) -> Path:
     model_name = normalize_model_name(
-        str(cfg.get("model", {}).get("name", "yolov8n-pose.pt"))
+        str(cfg.get("model", {}).get("name", "yolo11n-pose.pt"))
     )
     weights_dir = resolve_task_weights_dir(
         cfg,
@@ -104,12 +104,20 @@ def _select_largest_ann(anns: List[Dict[str, Any]]) -> Optional[Dict[str, Any]]:
     return max(anns, key=_score)
 
 
-def _extract_gt_keypoints(ann: Dict[str, Any], num_keypoints: int) -> Optional[List[List[float]]]:
+def _extract_gt_keypoints(
+    ann: Dict[str, Any],
+    keypoint_indices: List[int],
+) -> Optional[List[List[float]]]:
     kps = ann.get("keypoints")
-    if not (isinstance(kps, list) and len(kps) == 3 * num_keypoints):
+    max_idx = max(keypoint_indices) if keypoint_indices else -1
+    if not (
+        isinstance(kps, list)
+        and max_idx >= 0
+        and len(kps) >= 3 * (max_idx + 1)
+    ):
         return None
     out: List[List[float]] = []
-    for i in range(num_keypoints):
+    for i in keypoint_indices:
         x = float(kps[3 * i + 0])
         y = float(kps[3 * i + 1])
         v = float(kps[3 * i + 2])
@@ -121,7 +129,7 @@ def _build_records(
     coco: Dict[str, Any],
     dataset_root: Path,
     category_name: str,
-    num_keypoints: int,
+    keypoint_names: List[str],
 ) -> List[Dict[str, Any]]:
     images = coco.get("images", [])
     annotations = coco.get("annotations", [])
@@ -136,6 +144,22 @@ def _build_records(
         target_cat_id = int(categories[0]["id"])
     if target_cat_id is None:
         raise ValueError(f"Category '{category_name}' not found in COCO categories.")
+    category = next(
+        (cat for cat in categories if cat.get("id") == target_cat_id),
+        categories[0] if len(categories) == 1 else {},
+    )
+    source_names = [str(v) for v in category.get("keypoints", [])]
+    if source_names:
+        idx_by_name = {name: idx for idx, name in enumerate(source_names)}
+        missing = [name for name in keypoint_names if name not in idx_by_name]
+        if missing:
+            raise ValueError(
+                "Configured keypoints are not present in COCO category keypoints: "
+                + ", ".join(missing)
+            )
+        keypoint_indices = [idx_by_name[name] for name in keypoint_names]
+    else:
+        keypoint_indices = list(range(len(keypoint_names)))
 
     images_root = dataset_root / "images"
     if not images_root.exists():
@@ -157,7 +181,7 @@ def _build_records(
         bbox = ann.get("bbox")
         if not (isinstance(bbox, list) and len(bbox) == 4):
             continue
-        if _extract_gt_keypoints(ann, num_keypoints=num_keypoints) is None:
+        if _extract_gt_keypoints(ann, keypoint_indices=keypoint_indices) is None:
             continue
         anns_by_img.setdefault(img_id, []).append(ann)
 
@@ -177,7 +201,7 @@ def _build_records(
         ann = _select_largest_ann(anns)
         if ann is None:
             continue
-        gt_kps = _extract_gt_keypoints(ann, num_keypoints=num_keypoints)
+        gt_kps = _extract_gt_keypoints(ann, keypoint_indices=keypoint_indices)
         if gt_kps is None:
             continue
 
@@ -361,7 +385,7 @@ def main() -> None:
     ecfg = cfg.get("evaluation", {})
     category_name = str(cfg.get("dataset", {}).get("category_name", "gauge"))
     kp_cfg = cfg.get("keypoints", {})
-    kp_names = [str(v) for v in kp_cfg.get("names", ["center", "needle_tip", "scale_start", "scale_end"])]
+    kp_names = [str(v) for v in kp_cfg.get("names", ["center", "scale_start", "scale_end"])]
     num_keypoints = int(kp_cfg.get("num_keypoints", len(kp_names)))
 
     score_thr = (
@@ -387,9 +411,15 @@ def main() -> None:
             coco,
             dataset_root=dataset_root,
             category_name=category_name,
-            num_keypoints=num_keypoints,
+            keypoint_names=kp_names,
         )
     if not records:
+        if crop_mode:
+            raise RuntimeError(
+                f"No crop records found for split={args.split}. "
+                "Rebuild the keypoint dataset with "
+                "`uv run --no-sync ./data/build_kp_yolo_pose_from_coco.py --config configs/config_keypoints.yaml`."
+            )
         raise RuntimeError(f"No records found for split={args.split}")
     chosen = random.sample(records, k=min(args.num_samples, len(records)))
 

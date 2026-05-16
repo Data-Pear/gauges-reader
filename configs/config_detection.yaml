@@ -1,21 +1,21 @@
 dataset:
-  name: synthetic-analog-gauges
+  name: synthetic-analog-gauges-v2_0
   category_name: gauge
 
 paths:
-  raw_ds_path: data/raw/synthetic-analog-gauges
+  raw_ds_path: data/raw/dataset_v2_0
   processed_ds_path: data/processed
 
   train_inst_coco: annotations/instances_train.json
   val_inst_coco: annotations/instances_val.json
   test_inst_coco: annotations/instances_test.json
 
-  yolo_dataset_root: data/processed/synthetic-analog-gauges_det_yolo
-  yolo_data_yaml: configs/synthgauge_det_yolo_data.yaml
-  weights_dir_det: models/weights/synthetic-analog-gauges/det_yolov8n
+  yolo_dataset_root: data/processed/synthetic-analog-gauges-v2_0_det_yolo
+  yolo_data_yaml: configs/synthgauge_v2_det_yolo_data.yaml
+  weights_dir_det: models/weights/synthetic-analog-gauges-v2_0/det_yolo11n
 
 model:
-  name: yolov8n.pt
+  name: yolo11n.pt
   pretrained: true
   imgsz: 640
 

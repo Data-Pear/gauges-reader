@@ -112,18 +112,6 @@ def _resolve_split_coco_path(cfg: Dict[str, Any], split: str) -> Path:
     return p
 
 
-def _find_category_id(coco: Dict[str, Any], category_name: str) -> int:
-    categories = coco.get("categories", [])
-    for cat in categories:
-        if cat.get("name") == category_name and isinstance(cat.get("id"), int):
-            return int(cat["id"])
-
-    if len(categories) == 1 and isinstance(categories[0].get("id"), int):
-        return int(categories[0]["id"])
-
-    raise ValueError(f"Category '{category_name}' not found in COCO categories.")
-
-
 def _bbox_xywh_to_xyxy(b: List[float]) -> List[float]:
     x, y, w, h = [float(v) for v in b]
     return [x, y, x + w, y + h]
@@ -168,13 +156,21 @@ def _select_largest_ann(anns: List[Dict[str, Any]]) -> Optional[Dict[str, Any]]:
     return max(anns, key=_score)
 
 
-def _extract_gt_keypoints(ann: Dict[str, Any], num_keypoints: int) -> Optional[List[List[float]]]:
+def _extract_gt_keypoints(
+    ann: Dict[str, Any],
+    keypoint_indices: List[int],
+) -> Optional[List[List[float]]]:
     kps = ann.get("keypoints")
-    if not (isinstance(kps, list) and len(kps) == 3 * num_keypoints):
+    max_idx = max(keypoint_indices) if keypoint_indices else -1
+    if not (
+        isinstance(kps, list)
+        and max_idx >= 0
+        and len(kps) >= 3 * (max_idx + 1)
+    ):
         return None
 
     out: List[List[float]] = []
-    for i in range(num_keypoints):
+    for i in keypoint_indices:
         out.append(
             [
                 float(kps[3 * i + 0]),
@@ -189,9 +185,32 @@ def _build_eval_records(
     coco: Dict[str, Any],
     dataset_root: Path,
     category_name: str,
-    num_keypoints: int,
+    keypoint_names: List[str],
 ) -> List[Dict[str, Any]]:
-    target_cat_id = _find_category_id(coco, category_name)
+    categories = coco.get("categories", [])
+    target_cat = None
+    for cat in categories:
+        if cat.get("name") == category_name and isinstance(cat.get("id"), int):
+            target_cat = cat
+            break
+    if target_cat is None and len(categories) == 1 and isinstance(categories[0].get("id"), int):
+        target_cat = categories[0]
+    if target_cat is None:
+        raise ValueError(f"Category '{category_name}' not found in COCO categories.")
+
+    target_cat_id = int(target_cat["id"])
+    source_names = [str(v) for v in target_cat.get("keypoints", [])]
+    if source_names:
+        idx_by_name = {name: idx for idx, name in enumerate(source_names)}
+        missing = [name for name in keypoint_names if name not in idx_by_name]
+        if missing:
+            raise ValueError(
+                "Configured keypoints are not present in COCO category keypoints: "
+                + ", ".join(missing)
+            )
+        keypoint_indices = [idx_by_name[name] for name in keypoint_names]
+    else:
+        keypoint_indices = list(range(len(keypoint_names)))
 
     images_root = dataset_root / "images"
     if not images_root.exists():
@@ -213,7 +232,7 @@ def _build_eval_records(
             continue
         if not (isinstance(bbox, list) and len(bbox) == 4):
             continue
-        if _extract_gt_keypoints(ann, num_keypoints) is None:
+        if _extract_gt_keypoints(ann, keypoint_indices) is None:
             continue
         anns_by_img.setdefault(img_id, []).append(ann)
 
@@ -234,7 +253,7 @@ def _build_eval_records(
         if ann is None:
             continue
 
-        gt_kps = _extract_gt_keypoints(ann, num_keypoints)
+        gt_kps = _extract_gt_keypoints(ann, keypoint_indices)
         if gt_kps is None:
             continue
 
@@ -411,7 +430,7 @@ def _compute_pose_custom_metrics(
     score_thr: float,
 ) -> Dict[str, float]:
     kp_cfg = cfg.get("keypoints", {})
-    kp_names = [str(v) for v in kp_cfg.get("names", ["center", "needle_tip", "scale_start", "scale_end"])]
+    kp_names = [str(v) for v in kp_cfg.get("names", ["center", "scale_start", "scale_end"])]
     num_keypoints = int(kp_cfg.get("num_keypoints", len(kp_names)))
 
     records = _build_eval_records_from_yolo_split(
@@ -429,22 +448,25 @@ def _compute_pose_custom_metrics(
             coco=coco,
             dataset_root=dataset_root,
             category_name=category_name,
-            num_keypoints=num_keypoints,
+            keypoint_names=kp_names,
         )
 
     if not records:
         return {
             "PCK@0.05": float("nan"),
             "PCK@0.10": float("nan"),
-            "mean_angular_error_deg": float("nan"),
+            "mean_keypoint_error_px": float("nan"),
+            "normalized_mean_keypoint_error": float("nan"),
         }
 
-    center_idx = kp_names.index("center") if "center" in kp_names else 0
-    tip_idx = kp_names.index("needle_tip") if "needle_tip" in kp_names else min(1, num_keypoints - 1)
+    center_idx = kp_names.index("center") if "center" in kp_names else None
+    tip_idx = kp_names.index("needle_tip") if "needle_tip" in kp_names else None
 
     total_visible = 0
     correct_005 = 0
     correct_010 = 0
+    distance_sum = 0.0
+    normalized_distance_sum = 0.0
     angle_errors: List[float] = []
     images_with_prediction = 0
 
@@ -481,13 +503,17 @@ def _compute_pose_custom_metrics(
                 px = float(pred_kps[i][0])
                 py = float(pred_kps[i][1])
                 d = math.hypot(px - float(gx), py - float(gy))
+                distance_sum += d
+                normalized_distance_sum += d / scale
                 if d <= 0.05 * scale:
                     correct_005 += 1
                 if d <= 0.10 * scale:
                     correct_010 += 1
 
             if (
-                center_idx < num_keypoints
+                center_idx is not None
+                and tip_idx is not None
+                and center_idx < num_keypoints
                 and tip_idx < num_keypoints
                 and float(gt_kps[center_idx][2]) > 0
                 and float(gt_kps[tip_idx][2]) > 0
@@ -512,18 +538,23 @@ def _compute_pose_custom_metrics(
 
     pck_005 = float(correct_005 / total_visible) if total_visible > 0 else float("nan")
     pck_010 = float(correct_010 / total_visible) if total_visible > 0 else float("nan")
-    mean_angular_error = (
-        float(sum(angle_errors) / len(angle_errors)) if angle_errors else float("nan")
+    mean_kp_error = float(distance_sum / total_visible) if total_visible > 0 else float("nan")
+    normalized_mean_kp_error = (
+        float(normalized_distance_sum / total_visible) if total_visible > 0 else float("nan")
     )
 
-    return {
+    metrics = {
         "PCK@0.05": pck_005,
         "PCK@0.10": pck_010,
-        "mean_angular_error_deg": mean_angular_error,
+        "mean_keypoint_error_px": mean_kp_error,
+        "normalized_mean_keypoint_error": normalized_mean_kp_error,
         "pck_visible_points": float(total_visible),
-        "angular_samples": float(len(angle_errors)),
         "pose_detection_rate": float(images_with_prediction / len(records)),
     }
+    if angle_errors:
+        metrics["mean_angular_error_deg"] = float(sum(angle_errors) / len(angle_errors))
+        metrics["angular_samples"] = float(len(angle_errors))
+    return metrics
 
 
 def main() -> None:
@@ -558,7 +589,7 @@ def main() -> None:
     cos_lr = str(tcfg.get("lr_scheduler", "cosine")).lower() == "cosine"
     seed = int(tcfg.get("seed", 42))
     device = resolve_yolo_device(str(tcfg.get("device", "auto")))
-    model_name = normalize_model_name(str(mcfg.get("name", "yolo11s-pose.pt")))
+    model_name = normalize_model_name(str(mcfg.get("name", "yolo11n-pose.pt")))
     pretrained = bool(mcfg.get("pretrained", True))
     augment_cfg = dict(tcfg.get("augment", {}))
 

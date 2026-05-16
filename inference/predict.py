@@ -26,12 +26,12 @@ from utils.runtime import (
     resolve_yolo_device,
 )
 
-TASKS = ("detection", "keypoints", "regression")
+TASKS = ("detection", "keypoints", "segmentation", "needle_segmentation", "regression")
 
 
 def _parse_args() -> argparse.Namespace:
     ap = argparse.ArgumentParser(
-        description="Unified inference entrypoint for detection, keypoints, and regression."
+        description="Unified inference entrypoint for detection, keypoints, segmentation, and regression."
     )
     ap.add_argument("--task", required=True, choices=TASKS)
     ap.add_argument("--config", type=str, default=None)
@@ -52,6 +52,8 @@ def _default_config(task: str) -> Path:
         return (PROJECT_ROOT / "configs" / "config_detection.yaml").resolve()
     if task == "keypoints":
         return (PROJECT_ROOT / "configs" / "config_keypoints.yaml").resolve()
+    if task in {"segmentation", "needle_segmentation"}:
+        return (PROJECT_ROOT / "configs" / "config_segmentation.yaml").resolve()
     return (PROJECT_ROOT / "configs" / "config_regression.yaml").resolve()
 
 
@@ -104,6 +106,39 @@ def _resolve_detection_or_keypoints_images(
     return out
 
 
+def _resolve_segmentation_images(cfg: Dict[str, Any], split: str) -> List[Path]:
+    yolo_root = Path(str(cfg.get("paths", {}).get("yolo_dataset_root", ""))).resolve()
+    images_root = yolo_root / "images" / split
+    exts = {".jpg", ".jpeg", ".png", ".bmp", ".webp"}
+    if images_root.exists():
+        return sorted(
+            [
+                p.resolve()
+                for p in images_root.rglob("*")
+                if p.is_file() and p.suffix.lower() in exts
+            ]
+        )
+
+    raw_root = Path(str(cfg.get("paths", {}).get("raw_ds_path", ""))).resolve()
+    semantic_rel = cfg.get("paths", {}).get(
+        f"{split}_semantic_json", f"annotations/semantic_{split}.json"
+    )
+    semantic_path = (raw_root / str(semantic_rel)).resolve()
+    if not semantic_path.exists():
+        raise FileNotFoundError(f"Semantic JSON file not found: {semantic_path}")
+
+    semantic = _load_json(semantic_path)
+    out: List[Path] = []
+    for rec in semantic.get("images", []):
+        image_file = rec.get("image_file")
+        if not isinstance(image_file, str):
+            continue
+        p = (raw_root / Path(image_file.replace("\\", "/"))).resolve()
+        if p.exists():
+            out.append(p)
+    return out
+
+
 def _resolve_regression_index(cfg: Dict[str, Any], split: str) -> Path:
     paths = cfg.get("paths", {})
     if split == "train":
@@ -140,10 +175,22 @@ def _sample_images(image_paths: List[Path], num_samples: int, seed: int) -> List
 
 
 def _resolve_yolo_weights(cfg: Dict[str, Any], task: str, explicit: Optional[str]) -> Path:
-    model_name_default = "yolov8n.pt" if task == "detection" else "yolo11s-pose.pt"
+    model_name_default = {
+        "detection": "yolo11n.pt",
+        "keypoints": "yolo11n-pose.pt",
+        "segmentation": "yolo11n-seg.pt",
+        "needle_segmentation": "yolo11n-seg.pt",
+    }[task]
     model_name = normalize_model_name(str(cfg.get("model", {}).get("name", model_name_default)))
-    weights_key = "weights_dir_det" if task == "detection" else "weights_dir_kp"
-    task_prefix = "det" if task == "detection" else "kp"
+    if task == "detection":
+        weights_key = "weights_dir_det"
+        task_prefix = "det"
+    elif task == "keypoints":
+        weights_key = "weights_dir_kp"
+        task_prefix = "kp"
+    else:
+        weights_key = "weights_dir_seg"
+        task_prefix = "seg"
     weights_dir = resolve_task_weights_dir(
         cfg,
         weights_key=weights_key,
@@ -255,6 +302,53 @@ def _predict_keypoints_on_image(
     return {"image_path": str(image_path), "detections": detections}
 
 
+def _extract_mask_polygons(result: Any, det_idx: int) -> Optional[List[List[List[float]]]]:
+    masks = getattr(result, "masks", None)
+    if masks is None:
+        return None
+    xy = getattr(masks, "xy", None)
+    if xy is None or len(xy) <= det_idx:
+        return None
+    polygons: List[List[List[float]]] = []
+    for poly in [xy[det_idx]]:
+        polygons.append([[float(x), float(y)] for x, y in poly.tolist()])
+    return polygons
+
+
+def _predict_segmentation_on_image(
+    model: YOLO,
+    image_path: Path,
+    *,
+    imgsz: int,
+    score_thr: float,
+    device: str,
+) -> Dict[str, Any]:
+    result = model.predict(
+        source=str(image_path),
+        conf=score_thr,
+        imgsz=imgsz,
+        device=device,
+        verbose=False,
+    )[0]
+
+    detections: List[Dict[str, Any]] = []
+    boxes = getattr(result, "boxes", None)
+    if boxes is not None and len(boxes) > 0:
+        xyxy = boxes.xyxy.detach().cpu().numpy()
+        conf = boxes.conf.detach().cpu().numpy()
+        cls = boxes.cls.detach().cpu().numpy()
+        for i in range(len(xyxy)):
+            detections.append(
+                {
+                    "bbox_xyxy": [float(v) for v in xyxy[i].tolist()],
+                    "score": float(conf[i]),
+                    "class_id": int(cls[i]),
+                    "mask_polygons_xy": _extract_mask_polygons(result, i),
+                }
+            )
+    return {"image_path": str(image_path), "detections": detections}
+
+
 def _load_regression_model(cfg: Dict[str, Any], weights_path: Path, device: torch.device) -> torch.nn.Module:
     model_cfg = cfg.get("model", {})
     model = GaugeRegressor(
@@ -303,7 +397,9 @@ def main() -> None:
         "config_path": str(cfg_path),
     }
 
-    if args.task in ("detection", "keypoints"):
+    task = "segmentation" if args.task == "needle_segmentation" else args.task
+
+    if task in ("detection", "keypoints", "segmentation"):
         training_cfg = cfg.get("training", {})
         model_cfg = cfg.get("model", {})
         eval_cfg = cfg.get("evaluation", {})
@@ -312,11 +408,11 @@ def main() -> None:
             if args.score_thr is not None
             else float(eval_cfg.get("score_thr", 0.25))
         )
-        imgsz_default = 640 if args.task == "detection" else 960
+        imgsz_default = 960 if task == "keypoints" else 640
         imgsz = int(args.imgsz) if args.imgsz is not None else int(model_cfg.get("imgsz", imgsz_default))
         requested_device = training_cfg.get("device", "auto") if args.device == "from-config" else args.device
         device = resolve_yolo_device(str(requested_device))
-        weights_path = _resolve_yolo_weights(cfg, args.task, args.weights)
+        weights_path = _resolve_yolo_weights(cfg, task, args.weights)
         model = YOLO(str(weights_path))
 
         if args.image is not None:
@@ -325,15 +421,18 @@ def main() -> None:
             split = None
         else:
             split = str(args.split)
-            use_yolo_split = bool(
-                args.task == "keypoints"
-                and cfg.get("keypoints", {}).get("crop_dial", False)
-            )
-            image_paths = _resolve_detection_or_keypoints_images(
-                cfg,
-                split=split,
-                use_yolo_split=use_yolo_split,
-            )
+            if task == "segmentation":
+                image_paths = _resolve_segmentation_images(cfg, split=split)
+            else:
+                use_yolo_split = bool(
+                    task == "keypoints"
+                    and cfg.get("keypoints", {}).get("crop_dial", False)
+                )
+                image_paths = _resolve_detection_or_keypoints_images(
+                    cfg,
+                    split=split,
+                    use_yolo_split=use_yolo_split,
+                )
             image_paths = _sample_images(image_paths, num_samples=args.num_samples, seed=args.seed)
             mode = "dataset_split"
 
@@ -342,7 +441,7 @@ def main() -> None:
 
         predictions: List[Dict[str, Any]] = []
         for image_path in image_paths:
-            if args.task == "detection":
+            if task == "detection":
                 predictions.append(
                     _predict_detection_on_image(
                         model,
@@ -352,9 +451,19 @@ def main() -> None:
                         device=device,
                     )
                 )
-            else:
+            elif task == "keypoints":
                 predictions.append(
                     _predict_keypoints_on_image(
+                        model,
+                        image_path,
+                        imgsz=imgsz,
+                        score_thr=score_thr,
+                        device=device,
+                    )
+                )
+            else:
+                predictions.append(
+                    _predict_segmentation_on_image(
                         model,
                         image_path,
                         imgsz=imgsz,

@@ -10,12 +10,23 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 def _parse_args() -> tuple[argparse.Namespace, list[str]]:
     ap = argparse.ArgumentParser(
-        description="Unified evaluation entrypoint for detection, keypoints, and regression."
+        description=(
+            "Unified evaluation entrypoint for detection, keypoints, segmentation, "
+            "full pipeline, and regression."
+        )
     )
     ap.add_argument(
         "--task",
         required=True,
-        choices=["detection", "keypoints", "regression"],
+        choices=[
+            "detection",
+            "keypoints",
+            "segmentation",
+            "needle_segmentation",
+            "pipeline",
+            "full_pipeline",
+            "regression",
+        ],
         help="Evaluation pipeline to run.",
     )
     ap.add_argument(
@@ -28,6 +39,16 @@ def _parse_args() -> tuple[argparse.Namespace, list[str]]:
 
 
 def _task_defaults(task: str) -> tuple[Path, Path]:
+    if task in {"pipeline", "full_pipeline"}:
+        return (
+            PROJECT_ROOT / "training" / "eval_full_pipeline.py",
+            PROJECT_ROOT / "configs" / "config_full_pipeline.yaml",
+        )
+    if task in {"segmentation", "needle_segmentation"}:
+        return (
+            PROJECT_ROOT / "training" / "eval_needle_seg_yolo.py",
+            PROJECT_ROOT / "configs" / "config_segmentation.yaml",
+        )
     if task == "regression":
         return (
             PROJECT_ROOT / "training" / "eval_regression.py",

@@ -1,0 +1,56 @@
+dataset:
+  name: synthetic-analog-gauges-v2_0
+  category_name: gauge
+
+paths:
+  raw_ds_path: data/raw/dataset_v2_0
+  processed_ds_path: data/processed
+
+  train_inst_coco: annotations/instances_train.json
+  val_inst_coco: annotations/instances_val.json
+  test_inst_coco: annotations/instances_test.json
+
+  train_semantic_json: annotations/semantic_train.json
+  val_semantic_json: annotations/semantic_val.json
+  test_semantic_json: annotations/semantic_test.json
+
+  yolo_dataset_root: data/processed/synthetic-analog-gauges-v2_0_needle_seg_yolo
+  yolo_data_yaml: configs/synthgauge_v2_needle_seg_yolo_data.yaml
+  weights_dir_seg: models/weights/synthetic-analog-gauges-v2_0/seg_yolo11n-seg
+
+segmentation:
+  target_class_name: needle
+  target_class_id: 4
+  crop_dial: true
+  crop_pad_ratio: 0.08
+  min_area_px: 4
+  approx_epsilon_ratio: 0.002
+
+model:
+  name: yolo11n-seg.pt
+  pretrained: true
+  imgsz: 640
+
+training:
+  device: cuda
+  epochs: 100
+  batch_size: 16
+  num_workers: 4
+  optimizer: AdamW
+  lr0: 1.0e-3
+  weight_decay: 1.0e-4
+  lr_scheduler: cosine
+  seed: 42
+
+evaluation:
+  split: test
+  score_thr: 0.25
+  metrics:
+    - "mask_precision"
+    - "mask_recall"
+    - "mask_mAP@0.5"
+    - "mask_mAP@0.5:0.95"
+    - "needle_iou"
+    - "needle_dice"
+    - "needle_pixel_precision"
+    - "needle_pixel_recall"

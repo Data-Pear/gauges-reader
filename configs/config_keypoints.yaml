@@ -1,32 +1,31 @@
 dataset:
-  name: synthetic-analog-gauges
+  name: synthetic-analog-gauges-v2_0
   category_name: gauge
 
 paths:
-  raw_ds_path: data/raw/synthetic-analog-gauges
+  raw_ds_path: data/raw/dataset_v2_0
   processed_ds_path: data/processed
 
   train_inst_coco: annotations/instances_train.json
   val_inst_coco: annotations/instances_val.json
   test_inst_coco: annotations/instances_test.json
 
-  yolo_dataset_root: data/processed/synthetic-analog-gauges_kp_yolo_pose_crop
-  yolo_data_yaml: configs/synthgauge_kp_yolo_crop_data.yaml
-  weights_dir_kp: models/weights/synthetic-analog-gauges/kp_yolo11s-pose
+  yolo_dataset_root: data/processed/synthetic-analog-gauges-v2_0_kp_yolo_pose_crop
+  yolo_data_yaml: configs/synthgauge_v2_kp_yolo_pose_crop_data.yaml
+  weights_dir_kp: models/weights/synthetic-analog-gauges-v2_0/kp_yolo11n-pose
 
 keypoints:
   names:
     - center
-    - needle_tip
     - scale_start
     - scale_end
-  num_keypoints: 4
-  flip_idx: [0, 1, 2, 3]
+  num_keypoints: 3
+  flip_idx: [0, 1, 2]
   crop_dial: true
   crop_pad_ratio: 0.08
 
 model:
-  name: yolo11s-pose.pt
+  name: yolo11n-pose.pt
   pretrained: true
   imgsz: 960
 
@@ -66,4 +65,5 @@ evaluation:
     - "pose_mAP@0.5:0.95"
     - "PCK@0.05"
     - "PCK@0.10"
-    - "mean_angular_error_deg"
+    - "mean_keypoint_error_px"
+    - "normalized_mean_keypoint_error"

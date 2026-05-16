@@ -151,20 +151,20 @@ def find_weights_path(
             raise FileNotFoundError(f"Weights file not found: {p}\nAlso checked: {alt}")
         raise FileNotFoundError(f"Weights file not found: {p}")
 
-    candidates = [weights_dir / "best.pt", weights_dir / "last.pt"]
+    best_candidates = [weights_dir / "best.pt"]
+    last_candidates = [weights_dir / "last.pt"]
     if include_nested_weights_dir:
-        candidates.extend(
-            [
-                weights_dir / "weights" / "best.pt",
-                weights_dir / "weights" / "last.pt",
-            ]
-        )
-    for p in candidates:
-        if p.exists():
-            return p.resolve()
+        best_candidates.append(weights_dir / "weights" / "best.pt")
+        last_candidates.append(weights_dir / "weights" / "last.pt")
+
+    for group in [best_candidates, last_candidates]:
+        existing = [p for p in group if p.exists()]
+        if existing:
+            return max(existing, key=lambda p: p.stat().st_mtime).resolve()
 
     raise FileNotFoundError(
-        "No weights found. Checked: " + ", ".join(str(p) for p in candidates)
+        "No weights found. Checked: "
+        + ", ".join(str(p) for p in best_candidates + last_candidates)
     )
 
 

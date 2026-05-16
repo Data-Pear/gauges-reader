@@ -106,7 +106,7 @@ def main() -> None:
     cos_lr = str(tcfg.get("lr_scheduler", "cosine")).lower() == "cosine"
     seed = int(tcfg.get("seed", 42))
     device = resolve_yolo_device(str(tcfg.get("device", "auto")))
-    model_name = normalize_model_name(str(mcfg.get("name", "yolov8n.pt")))
+    model_name = normalize_model_name(str(mcfg.get("name", "yolo11n.pt")))
     pretrained = bool(mcfg.get("pretrained", True))
 
     log_path = (

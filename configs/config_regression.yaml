@@ -13,7 +13,7 @@ paths:
   val_reg_output_json: data/processed/synthetic-analog-gauges_reg/val_regression.jsonl
   test_reg_output_json: data/processed/synthetic-analog-gauges_reg/test_regression.jsonl
 
-  weights_dir_reg: models/weights/synthetic-analog-gauges/reg_resnet18
+  weights_dir_reg: models/weights/synthetic-analog-gauges/reg_convnext_tiny
 
 regression_target:
   category_name: gauge
@@ -40,7 +40,7 @@ transforms:
     blur_p: 0.2
 
 model:
-  backbone: resnet18
+  backbone: convnext_tiny
   pretrained: true
   dropout: 0.1
 

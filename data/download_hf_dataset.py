@@ -16,6 +16,28 @@ DEFAULT_REPO_ID = "Mileeena/synthetic-analog-gauges"
 DEFAULT_OUT = "data/raw/synthetic-analog-gauges"
 
 
+def _token_from_env_file(path: Path) -> str | None:
+    if not path.is_file():
+        return None
+
+    for line in path.read_text(encoding="utf-8").splitlines():
+        stripped = line.strip()
+        if not stripped or stripped.startswith("#") or "=" not in stripped:
+            continue
+        key, value = stripped.split("=", 1)
+        if key.strip() == "HF_TOKEN":
+            return value.strip().strip("\"'")
+    return None
+
+
+def _default_token() -> str | None:
+    return (
+        os.getenv("HF_TOKEN")
+        or os.getenv("HUGGINGFACE_HUB_TOKEN")
+        or _token_from_env_file(Path(".env"))
+    )
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Download a Hugging Face dataset into data/raw."
@@ -41,9 +63,27 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--token",
         type=str,
-        default=os.getenv("HF_TOKEN") or os.getenv("HUGGINGFACE_HUB_TOKEN"),
+        default=_default_token(),
         help="HF token for private/gated datasets. "
-        "Defaults to HF_TOKEN/HUGGINGFACE_HUB_TOKEN env var.",
+        "Defaults to HF_TOKEN/HUGGINGFACE_HUB_TOKEN env var, then .env HF_TOKEN.",
+    )
+    parser.add_argument(
+        "--allow-patterns",
+        nargs="*",
+        default=None,
+        help="Optional Hugging Face allow_patterns list, e.g. annotations/* images/*.",
+    )
+    parser.add_argument(
+        "--ignore-patterns",
+        nargs="*",
+        default=None,
+        help="Optional Hugging Face ignore_patterns list, e.g. metadata/*.",
+    )
+    parser.add_argument(
+        "--max-workers",
+        type=int,
+        default=8,
+        help="Maximum parallel Hub downloads. Lower this if HF returns 429.",
     )
     parser.add_argument(
         "--force",
@@ -66,6 +106,9 @@ def main() -> None:
             local_dir=str(out_dir),
             token=args.token,
             force_download=args.force,
+            allow_patterns=args.allow_patterns,
+            ignore_patterns=args.ignore_patterns,
+            max_workers=args.max_workers,
         )
     except GatedRepoError as exc:
         raise SystemExit(

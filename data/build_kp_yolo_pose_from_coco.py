@@ -240,11 +240,13 @@ def _write_split_labels(
     yolo_root: Path,
     labels_root: Path,
     target_cat_id: int,
-    num_keypoints: int,
+    keypoint_indices: list[int],
     crop_dial: bool,
     crop_pad_ratio: float,
 ) -> tuple[int, int]:
     coco = _read_json(coco_path)
+    num_keypoints = len(keypoint_indices)
+    max_keypoint_idx = max(keypoint_indices) if keypoint_indices else -1
 
     anns_by_image: Dict[int, list[Dict[str, Any]]] = defaultdict(list)
     for ann in coco.get("annotations", []):
@@ -258,7 +260,11 @@ def _write_split_labels(
             continue
         if not (isinstance(bbox, list) and len(bbox) == 4):
             continue
-        if not (isinstance(keypoints, list) and len(keypoints) == 3 * num_keypoints):
+        if not (
+            isinstance(keypoints, list)
+            and max_keypoint_idx >= 0
+            and len(keypoints) >= 3 * (max_keypoint_idx + 1)
+        ):
             continue
         anns_by_image[img_id].append(ann)
 
@@ -348,10 +354,10 @@ def _write_split_labels(
 
         kps = ann["keypoints"]
         kp_tokens: list[str] = []
-        for i in range(num_keypoints):
-            kx = float(kps[3 * i + 0])
-            ky = float(kps[3 * i + 1])
-            kv = int(float(kps[3 * i + 2]))
+        for src_idx in keypoint_indices:
+            kx = float(kps[3 * src_idx + 0])
+            ky = float(kps[3 * src_idx + 1])
+            kv = int(float(kps[3 * src_idx + 2]))
 
             if crop_dial:
                 kx -= float(crop_x1)
@@ -401,6 +407,43 @@ def _write_data_yaml(
         yaml.safe_dump(payload, f, sort_keys=False, allow_unicode=False)
 
 
+def _resolve_keypoint_selection(
+    cfg: Dict[str, Any],
+    target_cat: Dict[str, Any],
+) -> tuple[list[str], list[int]]:
+    keypoints_cfg = cfg.get("keypoints", {})
+    cat_keypoints = target_cat.get("keypoints", [])
+    cat_names = [str(k) for k in cat_keypoints] if isinstance(cat_keypoints, list) else []
+
+    cfg_keypoints = keypoints_cfg.get("names", [])
+    if isinstance(cfg_keypoints, list) and cfg_keypoints:
+        keypoint_names = [str(k) for k in cfg_keypoints]
+    elif cat_names:
+        keypoint_names = cat_names
+    else:
+        raise ValueError("Keypoint names are missing in config and COCO categories.")
+
+    cfg_num = keypoints_cfg.get("num_keypoints")
+    if cfg_num is not None and int(cfg_num) != len(keypoint_names):
+        raise ValueError(
+            f"num_keypoints={int(cfg_num)} does not match names count={len(keypoint_names)}"
+        )
+
+    if cat_names:
+        idx_by_name = {name: idx for idx, name in enumerate(cat_names)}
+        missing = [name for name in keypoint_names if name not in idx_by_name]
+        if missing:
+            raise ValueError(
+                "Configured keypoints are not present in COCO category keypoints: "
+                + ", ".join(missing)
+            )
+        keypoint_indices = [idx_by_name[name] for name in keypoint_names]
+    else:
+        keypoint_indices = list(range(len(keypoint_names)))
+
+    return keypoint_names, keypoint_indices
+
+
 def build_from_config(
     config_path: str | Path,
     raw_root: Optional[str | Path] = None,
@@ -430,20 +473,8 @@ def build_from_config(
             "paths.yolo_dataset_root must point to a processed directory, "
             "not to raw_ds_path."
         )
-    cat_keypoints = target_cat.get("keypoints", [])
-    cfg_keypoints = keypoints_cfg.get("names", [])
-    if isinstance(cfg_keypoints, list) and cfg_keypoints:
-        keypoint_names = [str(k) for k in cfg_keypoints]
-    elif isinstance(cat_keypoints, list) and cat_keypoints:
-        keypoint_names = [str(k) for k in cat_keypoints]
-    else:
-        raise ValueError("Keypoint names are missing in config and COCO categories.")
-
-    num_keypoints = int(keypoints_cfg.get("num_keypoints", len(keypoint_names)))
-    if num_keypoints != len(keypoint_names):
-        raise ValueError(
-            f"num_keypoints={num_keypoints} does not match names count={len(keypoint_names)}"
-        )
+    keypoint_names, keypoint_indices = _resolve_keypoint_selection(cfg, target_cat)
+    num_keypoints = len(keypoint_names)
 
     flip_idx = keypoints_cfg.get("flip_idx")
     if not isinstance(flip_idx, list) or len(flip_idx) != num_keypoints:
@@ -460,7 +491,7 @@ def build_from_config(
             yolo_root=yolo_root,
             labels_root=labels_root,
             target_cat_id=target_cat_id,
-            num_keypoints=num_keypoints,
+            keypoint_indices=keypoint_indices,
             crop_dial=crop_dial,
             crop_pad_ratio=crop_pad_ratio,
         )
@@ -485,6 +516,7 @@ def build_from_config(
     print(f"[OK] dataset_root: {dataset_root}")
     if yolo_root != dataset_root:
         print(f"[OK] yolo_root:    {yolo_root}")
+    print(f"[OK] keypoints:    {', '.join(keypoint_names)}")
     print(f"[OK] crop_dial:    {crop_dial} (pad_ratio={crop_pad_ratio:.3f})")
     print(f"[OK] labels_root:  {labels_root}")
     for split in ["train", "val", "test"]:

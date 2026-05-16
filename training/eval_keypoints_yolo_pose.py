@@ -45,7 +45,7 @@ def _parse_args() -> argparse.Namespace:
 
 def _resolve_weights_path(cfg: Dict[str, Any], explicit: Optional[str]) -> Path:
     model_name = normalize_model_name(
-        str(cfg.get("model", {}).get("name", "yolo11s-pose.pt"))
+        str(cfg.get("model", {}).get("name", "yolo11n-pose.pt"))
     )
     weights_dir = resolve_task_weights_dir(
         cfg,

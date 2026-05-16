@@ -1,0 +1,36 @@
+configs:
+  det: configs/config_detection.yaml
+  kp: configs/config_keypoints.yaml
+  seg: configs/config_segmentation.yaml
+
+dataset:
+  name: needle-base-tip-min-max-u87vi-gvqu
+  format: roboflow_landmarks
+  raw_ds_path: data/raw/needle-base-tip-min-max-u87vi-gvqu.v2i.coco
+  annotation_file: _annotations.coco.json
+  split_dirs:
+    train: train
+    val: valid
+    test: test
+  category_map:
+    center: center
+    scale_start: min
+    scale_end: max
+    needle_tip: pointer_tip
+    meter: meter
+
+paths:
+  processed_ds_path: data/processed
+
+evaluation:
+  split: test
+  seed: 42
+  max_samples:
+  crop_pad_ratio: 0.08
+  acc_tolerance: 0.05
+  metrics:
+    - reading_mae
+    - reading_acc@5%
+    - kpt_error
+    - kpt_error_px
+    - needle_angle_mae_deg
