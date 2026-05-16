@@ -1,0 +1,20 @@
+\babel@toc {russian}{}\relax 
+\contentsline {section}{Аннотация}{3}{section*.2}%
+\contentsline {section}{Ключевые слова}{3}{section*.3}%
+\contentsline {section}{\numberline {1}Введение}{4}{section.1}%
+\contentsline {section}{\numberline {2}Теоретическая часть}{6}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Специфика задачи считывания показаний аналоговых датчиков}{6}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Основные подходы к решению задачи}{6}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Синтетические данные и доменная рандомизация}{7}{subsection.2.3}%
+\contentsline {subsection}{\numberline {2.4}Метрики качества и их смысл}{7}{subsection.2.4}%
+\contentsline {subsection}{\numberline {2.5}Сравнение трех постановок задачи}{8}{subsection.2.5}%
+\contentsline {subsection}{\numberline {2.6}Вывод по теоретической части}{8}{subsection.2.6}%
+\contentsline {section}{\numberline {3}Практическая часть}{9}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Общая постановка практической части}{9}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Подготовка данных}{9}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Эксперимент 1. Двухэтапный пайплайн: детекция и ключевые точки}{9}{subsection.3.3}%
+\contentsline {subsection}{\numberline {3.4}Эксперимент 2. Прямая регрессия показания}{11}{subsection.3.4}%
+\contentsline {subsection}{\numberline {3.5}Сравнительный анализ результатов}{12}{subsection.3.5}%
+\contentsline {subsection}{\numberline {3.6}Ограничения текущей реализации и план доработки}{12}{subsection.3.6}%
+\contentsline {subsection}{\numberline {3.7}Вывод по практической части}{13}{subsection.3.7}%
+\contentsline {section}{Список литературы}{14}{section*.7}%

@@ -1,0 +1,942 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.3 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{none/global//global/global/global}
+    \entry{schuetze2018}{article}{}{}
+      \true{moreauthor}
+      \true{morelabelname}
+      \name{author}{1}{}{%
+        {{hash=7a5f32d27e858b3a27b4f6694398f504}{%
+           family={Schleich},
+           familyi={S\bibinitperiod},
+           given={J.},
+           giveni={J\bibinitperiod}}}%
+      }
+      \strng{namehash}{f19f1f09ab60b5ea882dad91b198335d}
+      \strng{fullhash}{f19f1f09ab60b5ea882dad91b198335d}
+      \strng{fullhashraw}{f19f1f09ab60b5ea882dad91b198335d}
+      \strng{bibnamehash}{f19f1f09ab60b5ea882dad91b198335d}
+      \strng{authorbibnamehash}{f19f1f09ab60b5ea882dad91b198335d}
+      \strng{authornamehash}{f19f1f09ab60b5ea882dad91b198335d}
+      \strng{authorfullhash}{f19f1f09ab60b5ea882dad91b198335d}
+      \strng{authorfullhashraw}{f19f1f09ab60b5ea882dad91b198335d}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Journal of Sensors and Sensor Systems}
+      \field{title}{Sensors 4.0: Smart Sensors and Measurement Technology Enable Industry 4.0}
+      \field{urlday}{26}
+      \field{urlmonth}{1}
+      \field{urlyear}{2026}
+      \field{volume}{7}
+      \field{year}{2018}
+      \field{urldateera}{ce}
+      \field{pages}{359\bibrangedash 371}
+      \range{pages}{13}
+      \verb{urlraw}
+      \verb https://jsss.copernicus.org/articles/7/359/2018/jsss-7-359-2018.pdf
+      \endverb
+      \verb{url}
+      \verb https://jsss.copernicus.org/articles/7/359/2018/jsss-7-359-2018.pdf
+      \endverb
+    \endentry
+    \entry{adsul2021}{article}{}{}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{International Journal of New Technology and Research}
+      \field{title}{Reading Analog Gauges Using OpenCV for Hazardous Area Applications}
+      \field{urlday}{26}
+      \field{urlmonth}{1}
+      \field{urlyear}{2026}
+      \field{year}{2021}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://www.ijntr.org/download_data/IJNTRSIJUN21009.pdf
+      \endverb
+      \verb{url}
+      \verb https://www.ijntr.org/download_data/IJNTRSIJUN21009.pdf
+      \endverb
+    \endentry
+    \entry{howells2021}{inproceedings}{}{}
+      \name{author}{3}{}{%
+        {{hash=e30ca6e80448bf814aa4b814aa5fd006}{%
+           family={Howells},
+           familyi={H\bibinitperiod},
+           given={B.},
+           giveni={B\bibinitperiod}}}%
+        {{hash=08b6b4f8ebdec53cd1fa1c276ea35dd3}{%
+           family={Charles},
+           familyi={C\bibinitperiod},
+           given={J.},
+           giveni={J\bibinitperiod}}}%
+        {{hash=10984bdc9e409563b1a18de386283e4e}{%
+           family={Cipolla},
+           familyi={C\bibinitperiod},
+           given={R.},
+           giveni={R\bibinitperiod}}}%
+      }
+      \strng{namehash}{1c98a8ac6cd103806dd6acaf0605121d}
+      \strng{fullhash}{1c98a8ac6cd103806dd6acaf0605121d}
+      \strng{fullhashraw}{1c98a8ac6cd103806dd6acaf0605121d}
+      \strng{bibnamehash}{1c98a8ac6cd103806dd6acaf0605121d}
+      \strng{authorbibnamehash}{1c98a8ac6cd103806dd6acaf0605121d}
+      \strng{authornamehash}{1c98a8ac6cd103806dd6acaf0605121d}
+      \strng{authorfullhash}{1c98a8ac6cd103806dd6acaf0605121d}
+      \strng{authorfullhashraw}{1c98a8ac6cd103806dd6acaf0605121d}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition Workshops}
+      \field{title}{Real-Time Analogue Gauge Transcription on Mobile Phone}
+      \field{year}{2021}
+      \field{pages}{2369\bibrangedash 2377}
+      \range{pages}{9}
+    \endentry
+    \entry{reitsma2024}{inproceedings}{}{}
+      \name{author}{4}{}{%
+        {{hash=d38042cf93db6dcd12ef223c32ff74a9}{%
+           family={Reitsma},
+           familyi={R\bibinitperiod},
+           given={M.},
+           giveni={M\bibinitperiod}}}%
+        {{hash=2a4b0593e066de16e35d924f8f3fa238}{%
+           family={Keller},
+           familyi={K\bibinitperiod},
+           given={J.},
+           giveni={J\bibinitperiod}}}%
+        {{hash=e7e9e98382f084fdeec50b7c5a842dac}{%
+           family={Blomqvist},
+           familyi={B\bibinitperiod},
+           given={K.},
+           giveni={K\bibinitperiod}}}%
+        {{hash=07818300893272680700e26b484b2f50}{%
+           family={Siegwart},
+           familyi={S\bibinitperiod},
+           given={R.},
+           giveni={R\bibinitperiod}}}%
+      }
+      \strng{namehash}{a418fb70e24fa942c0888e8c834b01bc}
+      \strng{fullhash}{3f3c3a6669a71bbd333137253676b32b}
+      \strng{fullhashraw}{3f3c3a6669a71bbd333137253676b32b}
+      \strng{bibnamehash}{3f3c3a6669a71bbd333137253676b32b}
+      \strng{authorbibnamehash}{3f3c3a6669a71bbd333137253676b32b}
+      \strng{authornamehash}{a418fb70e24fa942c0888e8c834b01bc}
+      \strng{authorfullhash}{3f3c3a6669a71bbd333137253676b32b}
+      \strng{authorfullhashraw}{3f3c3a6669a71bbd333137253676b32b}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{2024 IEEE International Conference on Robotics and Automation}
+      \field{title}{Under Pressure: Learning-based Analog Gauge Reading in the Wild}
+      \field{year}{2024}
+      \field{pages}{14\bibrangedash 20}
+      \range{pages}{7}
+    \endentry
+    \entry{wang2022}{article}{}{}
+      \name{author}{4}{}{%
+        {{hash=09b2cf3d21d4b0cc3859229d4f2948d3}{%
+           family={Wang},
+           familyi={W\bibinitperiod},
+           given={C.-H.},
+           giveni={C\bibinithyphendelim H\bibinitperiod}}}%
+        {{hash=e91187b8ace82a6f19b45e6edf18d22a}{%
+           family={Huang},
+           familyi={H\bibinitperiod},
+           given={K.-K.},
+           giveni={K\bibinithyphendelim K\bibinitperiod}}}%
+        {{hash=8d7837b02b17f8b13bc7ef5f06d3155d}{%
+           family={Chang},
+           familyi={C\bibinitperiod},
+           given={R.-I.},
+           giveni={R\bibinithyphendelim I\bibinitperiod}}}%
+        {{hash=12f4306d591b98a9a8e7eead1a881fa6}{%
+           family={Huang},
+           familyi={H\bibinitperiod},
+           given={C.-K.},
+           giveni={C\bibinithyphendelim K\bibinitperiod}}}%
+      }
+      \strng{namehash}{082a23ef0efcff85a34055250d85e434}
+      \strng{fullhash}{3c8abcaba617d7d3b9ad0da75e148aa7}
+      \strng{fullhashraw}{3c8abcaba617d7d3b9ad0da75e148aa7}
+      \strng{bibnamehash}{3c8abcaba617d7d3b9ad0da75e148aa7}
+      \strng{authorbibnamehash}{3c8abcaba617d7d3b9ad0da75e148aa7}
+      \strng{authornamehash}{082a23ef0efcff85a34055250d85e434}
+      \strng{authorfullhash}{3c8abcaba617d7d3b9ad0da75e148aa7}
+      \strng{authorfullhashraw}{3c8abcaba617d7d3b9ad0da75e148aa7}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Sensors}
+      \field{number}{19}
+      \field{title}{Scale-Mark-Based Gauge Reading for Gauge Sensors in Real Environments with Light and Perspective Distortions}
+      \field{volume}{22}
+      \field{year}{2022}
+      \field{pages}{7490}
+      \range{pages}{1}
+    \endentry
+    \entry{coords2023}{article}{}{}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Journal of Physics: Conference Series}
+      \field{title}{Coordinates Transformation Method for Pointer Gauge Reading by Machine Vision}
+      \field{urlday}{26}
+      \field{urlmonth}{1}
+      \field{urlyear}{2026}
+      \field{volume}{2431}
+      \field{year}{2023}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://iopscience.iop.org/article/10.1088/1742-6596/2431/1/012019
+      \endverb
+      \verb{url}
+      \verb https://iopscience.iop.org/article/10.1088/1742-6596/2431/1/012019
+      \endverb
+    \endentry
+    \entry{sciRep2025}{article}{}{}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Scientific Reports}
+      \field{title}{End-to-End Deep Learning for Analog Gauge Reading}
+      \field{urlday}{26}
+      \field{urlmonth}{1}
+      \field{urlyear}{2026}
+      \field{year}{2024}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://www.nature.com/articles/s41598-024-81248-7
+      \endverb
+      \verb{url}
+      \verb https://www.nature.com/articles/s41598-024-81248-7
+      \endverb
+    \endentry
+    \entry{leon2024}{inproceedings}{}{}
+      \name{author}{6}{}{%
+        {{hash=d079ae410862e1662a0b1a8ad0ee0d84}{%
+           family={Leon-Alcazar},
+           familyi={L\bibinithyphendelim A\bibinitperiod},
+           given={J.},
+           giveni={J\bibinitperiod}}}%
+        {{hash=adb30ccc080a005f3f48d169d95dbfc8}{%
+           family={Alnumay},
+           familyi={A\bibinitperiod},
+           given={Y.},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=d03b218fb77485bcb066c96c581b1786}{%
+           family={Zheng},
+           familyi={Z\bibinitperiod},
+           given={C.},
+           giveni={C\bibinitperiod}}}%
+        {{hash=df98dc01fc2658532aa8188f90b8149d}{%
+           family={Trigui},
+           familyi={T\bibinitperiod},
+           given={H.},
+           giveni={H\bibinitperiod}}}%
+        {{hash=bc9abbd956354f2690bbd958ce304fd4}{%
+           family={Patel},
+           familyi={P\bibinitperiod},
+           given={S.},
+           giveni={S\bibinitperiod}}}%
+        {{hash=efddebb03f2b6d6ca0d7d8cda0226525}{%
+           family={Ghanem},
+           familyi={G\bibinitperiod},
+           given={B.},
+           giveni={B\bibinitperiod}}}%
+      }
+      \strng{namehash}{0dac979266cbcdb7c11ab6254e0ab2a1}
+      \strng{fullhash}{88dca80d50e6dab2196592c4cadf6773}
+      \strng{fullhashraw}{88dca80d50e6dab2196592c4cadf6773}
+      \strng{bibnamehash}{88dca80d50e6dab2196592c4cadf6773}
+      \strng{authorbibnamehash}{88dca80d50e6dab2196592c4cadf6773}
+      \strng{authornamehash}{0dac979266cbcdb7c11ab6254e0ab2a1}
+      \strng{authorfullhash}{88dca80d50e6dab2196592c4cadf6773}
+      \strng{authorfullhashraw}{88dca80d50e6dab2196592c4cadf6773}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Proceedings of the IEEE/CVF Winter Conference on Applications of Computer Vision}
+      \field{title}{Learning to Read Analog Gauges from Synthetic Data}
+      \field{year}{2024}
+    \endentry
+    \entry{tobin2017}{inproceedings}{}{}
+      \name{author}{6}{}{%
+        {{hash=5c73b317b81940e4af2aba41716c1577}{%
+           family={Tobin},
+           familyi={T\bibinitperiod},
+           given={J.},
+           giveni={J\bibinitperiod}}}%
+        {{hash=34aed955f3d91785cb88e35db7c9cbbd}{%
+           family={Fong},
+           familyi={F\bibinitperiod},
+           given={R.},
+           giveni={R\bibinitperiod}}}%
+        {{hash=7a024462b0de6ca8858f7a58a1cdba5e}{%
+           family={Ray},
+           familyi={R\bibinitperiod},
+           given={A.},
+           giveni={A\bibinitperiod}}}%
+        {{hash=d5cb74ac22f4ab7bf05717e88de7f5d0}{%
+           family={Schneider},
+           familyi={S\bibinitperiod},
+           given={J.},
+           giveni={J\bibinitperiod}}}%
+        {{hash=5fce1d8a41469952e9d3a243f3ec3fb3}{%
+           family={Zaremba},
+           familyi={Z\bibinitperiod},
+           given={W.},
+           giveni={W\bibinitperiod}}}%
+        {{hash=a5a73b0b3ccfec972efeed03826f8f4e}{%
+           family={Abbeel},
+           familyi={A\bibinitperiod},
+           given={P.},
+           giveni={P\bibinitperiod}}}%
+      }
+      \strng{namehash}{827999ff8f0b7552d9e77769eae47cad}
+      \strng{fullhash}{06abf2c35af4c015a7a1f819a12a216c}
+      \strng{fullhashraw}{06abf2c35af4c015a7a1f819a12a216c}
+      \strng{bibnamehash}{06abf2c35af4c015a7a1f819a12a216c}
+      \strng{authorbibnamehash}{06abf2c35af4c015a7a1f819a12a216c}
+      \strng{authornamehash}{827999ff8f0b7552d9e77769eae47cad}
+      \strng{authorfullhash}{06abf2c35af4c015a7a1f819a12a216c}
+      \strng{authorfullhashraw}{06abf2c35af4c015a7a1f819a12a216c}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{2017 IEEE/RSJ International Conference on Intelligent Robots and Systems}
+      \field{title}{Domain Randomization for Transferring Deep Neural Networks from Simulation to the Real World}
+      \field{year}{2017}
+      \field{pages}{23\bibrangedash 30}
+      \range{pages}{8}
+    \endentry
+    \entry{horvath2023}{article}{}{}
+      \name{author}{5}{}{%
+        {{hash=d253423d0d2c4e93216120cc3a18636d}{%
+           family={Horvath},
+           familyi={H\bibinitperiod},
+           given={D.},
+           giveni={D\bibinitperiod}}}%
+        {{hash=a74839c6a084e20f0b2a5cb2550dbfcc}{%
+           family={Erdos},
+           familyi={E\bibinitperiod},
+           given={G.},
+           giveni={G\bibinitperiod}}}%
+        {{hash=e0c49cdcdb343ec61ff621805f50074a}{%
+           family={Istenes},
+           familyi={I\bibinitperiod},
+           given={Z.},
+           giveni={Z\bibinitperiod}}}%
+        {{hash=bbcad0b6d26ce769f7e5fd0e2ab489da}{%
+           family={Horvath},
+           familyi={H\bibinitperiod},
+           given={T.},
+           giveni={T\bibinitperiod}}}%
+        {{hash=47ae9e53850d3c6a233603c274d56618}{%
+           family={Foldi},
+           familyi={F\bibinitperiod},
+           given={S.},
+           giveni={S\bibinitperiod}}}%
+      }
+      \strng{namehash}{cba19371f97f34c08ad28752fec55453}
+      \strng{fullhash}{13527a0d92f69d8600b01d71edc6138e}
+      \strng{fullhashraw}{13527a0d92f69d8600b01d71edc6138e}
+      \strng{bibnamehash}{13527a0d92f69d8600b01d71edc6138e}
+      \strng{authorbibnamehash}{13527a0d92f69d8600b01d71edc6138e}
+      \strng{authornamehash}{cba19371f97f34c08ad28752fec55453}
+      \strng{authorfullhash}{13527a0d92f69d8600b01d71edc6138e}
+      \strng{authorfullhashraw}{13527a0d92f69d8600b01d71edc6138e}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{IEEE Transactions on Robotics}
+      \field{number}{2}
+      \field{title}{Object Detection Using Sim2Real Domain Randomization for Robotic Applications}
+      \field{volume}{39}
+      \field{year}{2023}
+      \field{pages}{1225\bibrangedash 1243}
+      \range{pages}{19}
+    \endentry
+    \entry{blenderproc2020}{inproceedings}{}{}
+      \name{author}{10}{}{%
+        {{hash=546dfed6745217c13543e930dc38f03e}{%
+           family={Denninger},
+           familyi={D\bibinitperiod},
+           given={M.},
+           giveni={M\bibinitperiod}}}%
+        {{hash=e38017dd9c77a7d4468999c81c69004b}{%
+           family={Sundermeyer},
+           familyi={S\bibinitperiod},
+           given={M.},
+           giveni={M\bibinitperiod}}}%
+        {{hash=951f0474a507701e8d9eefe930712186}{%
+           family={Winkelbauer},
+           familyi={W\bibinitperiod},
+           given={D.},
+           giveni={D\bibinitperiod}}}%
+        {{hash=db13ec80769aa2d65a352350e8f1625d}{%
+           family={Olefir},
+           familyi={O\bibinitperiod},
+           given={D.},
+           giveni={D\bibinitperiod}}}%
+        {{hash=05592755bec3ad2ab1a9c16225363766}{%
+           family={Hodan},
+           familyi={H\bibinitperiod},
+           given={T.},
+           giveni={T\bibinitperiod}}}%
+        {{hash=7636d934ce0d04dfe7dc97a4e4a89106}{%
+           family={Zidan},
+           familyi={Z\bibinitperiod},
+           given={Y.},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=afa861ec62cdb06bdc708e71214ef17e}{%
+           family={Elbadrawy},
+           familyi={E\bibinitperiod},
+           given={M.},
+           giveni={M\bibinitperiod}}}%
+        {{hash=df4fa3168c5b5ad729ed2b8b4cf335fb}{%
+           family={Knauer},
+           familyi={K\bibinitperiod},
+           given={M.},
+           giveni={M\bibinitperiod}}}%
+        {{hash=f2da06f2bf6bc5550593bd2e0d769d4e}{%
+           family={Katam},
+           familyi={K\bibinitperiod},
+           given={H.},
+           giveni={H\bibinitperiod}}}%
+        {{hash=a1d915f134635beb39efc60296c3e7bf}{%
+           family={Lodhi},
+           familyi={L\bibinitperiod},
+           given={A.},
+           giveni={A\bibinitperiod}}}%
+      }
+      \strng{namehash}{adc812938b25ba51f99c1c852a909ea6}
+      \strng{fullhash}{f0c94283ebb6d0a8abb2228ebf445623}
+      \strng{fullhashraw}{f0c94283ebb6d0a8abb2228ebf445623}
+      \strng{bibnamehash}{f0c94283ebb6d0a8abb2228ebf445623}
+      \strng{authorbibnamehash}{f0c94283ebb6d0a8abb2228ebf445623}
+      \strng{authornamehash}{adc812938b25ba51f99c1c852a909ea6}
+      \strng{authorfullhash}{f0c94283ebb6d0a8abb2228ebf445623}
+      \strng{authorfullhashraw}{f0c94283ebb6d0a8abb2228ebf445623}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{RSS 2020 Workshop on Closing the Reality Gap in Sim2Real Transfer for Robotics}
+      \field{title}{BlenderProc: Reducing the Reality Gap with Photorealistic Rendering}
+      \field{year}{2020}
+    \endentry
+    \entry{zhang2019}{inproceedings}{}{}
+      \true{moreauthor}
+      \true{morelabelname}
+      \name{author}{1}{}{%
+        {{hash=13414502df57d59c82c59a065c752294}{%
+           family={Zhang},
+           familyi={Z\bibinitperiod},
+           given={W.},
+           giveni={W\bibinitperiod}}}%
+      }
+      \strng{namehash}{4fa71801ef58dc13d0988911bee95e60}
+      \strng{fullhash}{4fa71801ef58dc13d0988911bee95e60}
+      \strng{fullhashraw}{4fa71801ef58dc13d0988911bee95e60}
+      \strng{bibnamehash}{4fa71801ef58dc13d0988911bee95e60}
+      \strng{authorbibnamehash}{4fa71801ef58dc13d0988911bee95e60}
+      \strng{authornamehash}{4fa71801ef58dc13d0988911bee95e60}
+      \strng{authorfullhash}{4fa71801ef58dc13d0988911bee95e60}
+      \strng{authorfullhashraw}{4fa71801ef58dc13d0988911bee95e60}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Proceedings of PMLR}
+      \field{title}{Domain Adaptation via Deep Transfer Learning}
+      \field{urlday}{26}
+      \field{urlmonth}{1}
+      \field{urlyear}{2026}
+      \field{year}{2019}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://proceedings.mlr.press/v97/zhang19i/zhang19i.pdf
+      \endverb
+      \verb{url}
+      \verb https://proceedings.mlr.press/v97/zhang19i/zhang19i.pdf
+      \endverb
+    \endentry
+    \entry{celsoSynthetic}{online}{}{}
+      \true{moreauthor}
+      \true{morelabelname}
+      \name{author}{1}{}{%
+        {{hash=3ff60790b0aa63f2665508942dc5eab8}{%
+           family={Celso},
+           familyi={C\bibinitperiod},
+           given={A.},
+           giveni={A\bibinitperiod}}}%
+      }
+      \strng{namehash}{de1a4f9cb7d1a332a8249190d043957e}
+      \strng{fullhash}{de1a4f9cb7d1a332a8249190d043957e}
+      \strng{fullhashraw}{de1a4f9cb7d1a332a8249190d043957e}
+      \strng{bibnamehash}{de1a4f9cb7d1a332a8249190d043957e}
+      \strng{authorbibnamehash}{de1a4f9cb7d1a332a8249190d043957e}
+      \strng{authornamehash}{de1a4f9cb7d1a332a8249190d043957e}
+      \strng{authorfullhash}{de1a4f9cb7d1a332a8249190d043957e}
+      \strng{authorfullhashraw}{de1a4f9cb7d1a332a8249190d043957e}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Synthetic Data Generation for Computer Vision Applications}
+      \field{urlday}{26}
+      \field{urlmonth}{1}
+      \field{urlyear}{2026}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://graphics.stanford.edu/courses/cs348n-23-spring/PapersReferenced/CelsoARL_paper.pdf
+      \endverb
+      \verb{url}
+      \verb https://graphics.stanford.edu/courses/cs348n-23-spring/PapersReferenced/CelsoARL_paper.pdf
+      \endverb
+    \endentry
+    \entry{meterRegression2024}{article}{}{}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Engineering Applications of Artificial Intelligence}
+      \field{title}{End-to-End Intelligent Systems for Visual Measurement}
+      \field{urlday}{26}
+      \field{urlmonth}{1}
+      \field{urlyear}{2026}
+      \field{year}{2024}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://www.sciencedirect.com/science/article/pii/S0952197624010212
+      \endverb
+      \verb{url}
+      \verb https://www.sciencedirect.com/science/article/pii/S0952197624010212
+      \endverb
+    \endentry
+    \entry{gaugeInspection2011}{article}{}{}
+      \field{sortinit}{6}
+      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Medical Engineering \& Physics}
+      \field{title}{Gauge Inspection Using Hough Transforms}
+      \field{urlday}{26}
+      \field{urlmonth}{1}
+      \field{urlyear}{2026}
+      \field{year}{2011}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://pubmed.ncbi.nlm.nih.gov/21869149/
+      \endverb
+      \verb{url}
+      \verb https://pubmed.ncbi.nlm.nih.gov/21869149/
+      \endverb
+    \endentry
+    \entry{hassanein2015}{online}{}{}
+      \field{sortinit}{7}
+      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
+      \field{labeltitlesource}{title}
+      \field{title}{Hough Transform: Theory and Applications}
+      \field{urlday}{26}
+      \field{urlmonth}{1}
+      \field{urlyear}{2026}
+      \field{year}{2015}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://arxiv.org/abs/1502.02160
+      \endverb
+      \verb{url}
+      \verb https://arxiv.org/abs/1502.02160
+      \endverb
+    \endentry
+    \entry{incrementalHough2016}{article}{}{}
+      \field{sortinit}{7}
+      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Optik}
+      \field{title}{Incremental Circle Hough Transform: An Improved Approach}
+      \field{urlday}{26}
+      \field{urlmonth}{1}
+      \field{urlyear}{2026}
+      \field{year}{2016}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://d1wqtxts1xzle7.cloudfront.net/95229451/j.ijleo.2016.12.06420221204-1-otufwo-libre.pdf
+      \endverb
+      \verb{url}
+      \verb https://d1wqtxts1xzle7.cloudfront.net/95229451/j.ijleo.2016.12.06420221204-1-otufwo-libre.pdf
+      \endverb
+    \endentry
+    \entry{kudrina2014}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=3043c3c54173d3e5542b54d2f9529ea3}{%
+           family={Кудрина},
+           familyi={К\bibinitperiod},
+           given={М.\bibnamedelimi А.},
+           giveni={М\bibinitperiod\bibinitdelim А\bibinitperiod}}}%
+      }
+      \strng{namehash}{3043c3c54173d3e5542b54d2f9529ea3}
+      \strng{fullhash}{3043c3c54173d3e5542b54d2f9529ea3}
+      \strng{fullhashraw}{3043c3c54173d3e5542b54d2f9529ea3}
+      \strng{bibnamehash}{3043c3c54173d3e5542b54d2f9529ea3}
+      \strng{authorbibnamehash}{3043c3c54173d3e5542b54d2f9529ea3}
+      \strng{authornamehash}{3043c3c54173d3e5542b54d2f9529ea3}
+      \strng{authorfullhash}{3043c3c54173d3e5542b54d2f9529ea3}
+      \strng{authorfullhashraw}{3043c3c54173d3e5542b54d2f9529ea3}
+      \field{sortinit}{7}
+      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Использование преобразования Хафа для обнаружения прямых линий и окружностей на изображении}
+      \field{urlday}{26}
+      \field{urlmonth}{1}
+      \field{urlyear}{2026}
+      \field{year}{2014}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://cyberleninka.ru/article/n/ispolzovanie-preobrazovaniya-hafa-dlya-obnaruzheniya-pryamyh-linii-i-okruzhnostey-na-izobrazhenii
+      \endverb
+      \verb{url}
+      \verb https://cyberleninka.ru/article/n/ispolzovanie-preobrazovaniya-hafa-dlya-obnaruzheniya-pryamyh-linii-i-okruzhnostey-na-izobrazhenii
+      \endverb
+    \endentry
+    \entry{yoloSurvey2022}{online}{}{}
+      \field{sortinit}{8}
+      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
+      \field{labeltitlesource}{title}
+      \field{title}{YOLO-Based Object Detection: A Survey}
+      \field{urlday}{26}
+      \field{urlmonth}{1}
+      \field{urlyear}{2026}
+      \field{year}{2022}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://arxiv.org/pdf/2208.00773
+      \endverb
+      \verb{url}
+      \verb https://arxiv.org/pdf/2208.00773
+      \endverb
+    \endentry
+    \entry{synthgaugehf2026}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=67a4adfdbf930d8b42d0ce9b740e68cc}{%
+           family={{Mileeena}},
+           familyi={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{67a4adfdbf930d8b42d0ce9b740e68cc}
+      \strng{fullhash}{67a4adfdbf930d8b42d0ce9b740e68cc}
+      \strng{fullhashraw}{67a4adfdbf930d8b42d0ce9b740e68cc}
+      \strng{bibnamehash}{67a4adfdbf930d8b42d0ce9b740e68cc}
+      \strng{authorbibnamehash}{67a4adfdbf930d8b42d0ce9b740e68cc}
+      \strng{authornamehash}{67a4adfdbf930d8b42d0ce9b740e68cc}
+      \strng{authorfullhash}{67a4adfdbf930d8b42d0ce9b740e68cc}
+      \strng{authorfullhashraw}{67a4adfdbf930d8b42d0ce9b740e68cc}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Hugging Face dataset repository for SynthGauge}
+      \field{title}{synthetic-analog-gauges}
+      \field{urlday}{10}
+      \field{urlmonth}{4}
+      \field{urlyear}{2026}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://huggingface.co/datasets/Mileeena/synthetic-analog-gauges
+      \endverb
+      \verb{url}
+      \verb https://huggingface.co/datasets/Mileeena/synthetic-analog-gauges
+      \endverb
+    \endentry
+    \entry{vasilyev2025}{article}{}{}
+      \name{author}{3}{}{%
+        {{hash=a3bbc05720ae2c86aeb68427fdbe145d}{%
+           family={Васильев},
+           familyi={В\bibinitperiod},
+           given={М.\bibnamedelimi Е.},
+           giveni={М\bibinitperiod\bibinitdelim Е\bibinitperiod}}}%
+        {{hash=399c4b65e87e67d669a0a2b633531074}{%
+           family={Шалимов},
+           familyi={Ш\bibinitperiod},
+           given={А.\bibnamedelimi С.},
+           giveni={А\bibinitperiod\bibinitdelim С\bibinitperiod}}}%
+        {{hash=1fa800b8838154898f03a12a8001a5bb}{%
+           family={Савина},
+           familyi={С\bibinitperiod},
+           given={О.\bibnamedelimi А.},
+           giveni={О\bibinitperiod\bibinitdelim А\bibinitperiod}}}%
+      }
+      \strng{namehash}{80abd3dbba67a9d9a8790c4a9ac45a0e}
+      \strng{fullhash}{80abd3dbba67a9d9a8790c4a9ac45a0e}
+      \strng{fullhashraw}{80abd3dbba67a9d9a8790c4a9ac45a0e}
+      \strng{bibnamehash}{80abd3dbba67a9d9a8790c4a9ac45a0e}
+      \strng{authorbibnamehash}{80abd3dbba67a9d9a8790c4a9ac45a0e}
+      \strng{authornamehash}{80abd3dbba67a9d9a8790c4a9ac45a0e}
+      \strng{authorfullhash}{80abd3dbba67a9d9a8790c4a9ac45a0e}
+      \strng{authorfullhashraw}{80abd3dbba67a9d9a8790c4a9ac45a0e}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Universum: технические науки}
+      \field{number}{6(135)}
+      \field{title}{Обзор версий YOLO: одноэтапная модель сверточной нейронной сети}
+      \field{urlday}{26}
+      \field{urlmonth}{1}
+      \field{urlyear}{2026}
+      \field{year}{2025}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://7universum.com/ru/tech/archive/item/20293
+      \endverb
+      \verb{url}
+      \verb https://7universum.com/ru/tech/archive/item/20293
+      \endverb
+    \endentry
+    \entry{hybridYoloDeepLab2024}{article}{}{}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Sensors}
+      \field{title}{Hybrid YOLOv8 and DeepLab Approach for Gauge Reading}
+      \field{urlday}{26}
+      \field{urlmonth}{1}
+      \field{urlyear}{2026}
+      \field{year}{2024}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://pmc.ncbi.nlm.nih.gov/articles/PMC11487445/pdf/sensors-24-05288.pdf
+      \endverb
+      \verb{url}
+      \verb https://pmc.ncbi.nlm.nih.gov/articles/PMC11487445/pdf/sensors-24-05288.pdf
+      \endverb
+    \endentry
+    \entry{maskrcnn2017}{inproceedings}{}{}
+      \true{moreauthor}
+      \true{morelabelname}
+      \name{author}{1}{}{%
+        {{hash=6b4b60e909e78633945f3f9c9dc83e01}{%
+           family={He},
+           familyi={H\bibinitperiod},
+           given={Kaiming},
+           giveni={K\bibinitperiod}}}%
+      }
+      \strng{namehash}{6edb98fe38401d2fe4a026f5ce6e8451}
+      \strng{fullhash}{6edb98fe38401d2fe4a026f5ce6e8451}
+      \strng{fullhashraw}{6edb98fe38401d2fe4a026f5ce6e8451}
+      \strng{bibnamehash}{6edb98fe38401d2fe4a026f5ce6e8451}
+      \strng{authorbibnamehash}{6edb98fe38401d2fe4a026f5ce6e8451}
+      \strng{authornamehash}{6edb98fe38401d2fe4a026f5ce6e8451}
+      \strng{authorfullhash}{6edb98fe38401d2fe4a026f5ce6e8451}
+      \strng{authorfullhashraw}{6edb98fe38401d2fe4a026f5ce6e8451}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Proceedings of ICCV}
+      \field{title}{Mask R-CNN}
+      \field{urlday}{26}
+      \field{urlmonth}{1}
+      \field{urlyear}{2026}
+      \field{year}{2017}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://openaccess.thecvf.com/content_ICCV_2017/papers/He_Mask_R-CNN_ICCV_2017_paper.pdf
+      \endverb
+      \verb{url}
+      \verb https://openaccess.thecvf.com/content_ICCV_2017/papers/He_Mask_R-CNN_ICCV_2017_paper.pdf
+      \endverb
+    \endentry
+    \entry{deeplab2016}{online}{}{}
+      \true{moreauthor}
+      \true{morelabelname}
+      \name{author}{1}{}{%
+        {{hash=c2680f0ccbdef681ef41faa0d1f774c1}{%
+           family={Chen},
+           familyi={C\bibinitperiod},
+           given={L.-C.},
+           giveni={L\bibinithyphendelim C\bibinitperiod}}}%
+      }
+      \strng{namehash}{925131840924952ecbfbfa30600d9000}
+      \strng{fullhash}{925131840924952ecbfbfa30600d9000}
+      \strng{fullhashraw}{925131840924952ecbfbfa30600d9000}
+      \strng{bibnamehash}{925131840924952ecbfbfa30600d9000}
+      \strng{authorbibnamehash}{925131840924952ecbfbfa30600d9000}
+      \strng{authornamehash}{925131840924952ecbfbfa30600d9000}
+      \strng{authorfullhash}{925131840924952ecbfbfa30600d9000}
+      \strng{authorfullhashraw}{925131840924952ecbfbfa30600d9000}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{DeepLab: Semantic Image Segmentation with Deep Convolutional Nets}
+      \field{urlday}{26}
+      \field{urlmonth}{1}
+      \field{urlyear}{2026}
+      \field{year}{2016}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://arxiv.org/pdf/1606.00915
+      \endverb
+      \verb{url}
+      \verb https://arxiv.org/pdf/1606.00915
+      \endverb
+    \endentry
+    \entry{unet2015}{online}{}{}
+      \name{author}{3}{}{%
+        {{hash=c2394148bf52ac7983b45592c0d97619}{%
+           family={Ronneberger},
+           familyi={R\bibinitperiod},
+           given={O.},
+           giveni={O\bibinitperiod}}}%
+        {{hash=0a7919e797ea52c2fcb95ad305247fc1}{%
+           family={Fischer},
+           familyi={F\bibinitperiod},
+           given={P.},
+           giveni={P\bibinitperiod}}}%
+        {{hash=6ea4130678efce0f25d7dbea53024f14}{%
+           family={Brox},
+           familyi={B\bibinitperiod},
+           given={T.},
+           giveni={T\bibinitperiod}}}%
+      }
+      \strng{namehash}{dcf21d8fe60949edbff7bba1a17c182e}
+      \strng{fullhash}{dcf21d8fe60949edbff7bba1a17c182e}
+      \strng{fullhashraw}{dcf21d8fe60949edbff7bba1a17c182e}
+      \strng{bibnamehash}{dcf21d8fe60949edbff7bba1a17c182e}
+      \strng{authorbibnamehash}{dcf21d8fe60949edbff7bba1a17c182e}
+      \strng{authornamehash}{dcf21d8fe60949edbff7bba1a17c182e}
+      \strng{authorfullhash}{dcf21d8fe60949edbff7bba1a17c182e}
+      \strng{authorfullhashraw}{dcf21d8fe60949edbff7bba1a17c182e}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{U-Net: Convolutional Networks for Biomedical Image Segmentation}
+      \field{urlday}{26}
+      \field{urlmonth}{1}
+      \field{urlyear}{2026}
+      \field{year}{2015}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://arxiv.org/pdf/1505.04597
+      \endverb
+      \verb{url}
+      \verb https://arxiv.org/pdf/1505.04597
+      \endverb
+    \endentry
+    \entry{quantization2021}{online}{}{}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labeltitlesource}{title}
+      \field{title}{Quantization Techniques for Deep Neural Networks}
+      \field{urlday}{26}
+      \field{urlmonth}{1}
+      \field{urlyear}{2026}
+      \field{year}{2021}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://arxiv.org/pdf/2106.08295
+      \endverb
+      \verb{url}
+      \verb https://arxiv.org/pdf/2106.08295
+      \endverb
+    \endentry
+    \entry{mobilenetv2}{online}{}{}
+      \true{moreauthor}
+      \true{morelabelname}
+      \name{author}{1}{}{%
+        {{hash=e8b590b012115f9bb3dbf5e5caa5438c}{%
+           family={Sandler},
+           familyi={S\bibinitperiod},
+           given={M.},
+           giveni={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{43fdd7e5d0395cda12765f29e6074127}
+      \strng{fullhash}{43fdd7e5d0395cda12765f29e6074127}
+      \strng{fullhashraw}{43fdd7e5d0395cda12765f29e6074127}
+      \strng{bibnamehash}{43fdd7e5d0395cda12765f29e6074127}
+      \strng{authorbibnamehash}{43fdd7e5d0395cda12765f29e6074127}
+      \strng{authornamehash}{43fdd7e5d0395cda12765f29e6074127}
+      \strng{authorfullhash}{43fdd7e5d0395cda12765f29e6074127}
+      \strng{authorfullhashraw}{43fdd7e5d0395cda12765f29e6074127}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{MobileNetV2: Inverted Residuals and Linear Bottlenecks}
+      \field{urlday}{26}
+      \field{urlmonth}{1}
+      \field{urlyear}{2026}
+      \field{year}{2017}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://arxiv.org/pdf/1712.04698
+      \endverb
+      \verb{url}
+      \verb https://arxiv.org/pdf/1712.04698
+      \endverb
+    \endentry
+    \entry{lightweightInspection2024}{article}{}{}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{IEEE Access}
+      \field{title}{Lightweight Deep Learning Model for Industrial Visual Inspection}
+      \field{urlday}{26}
+      \field{urlmonth}{1}
+      \field{urlyear}{2026}
+      \field{year}{2024}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://ieeexplore.ieee.org/document/10843390
+      \endverb
+      \verb{url}
+      \verb https://ieeexplore.ieee.org/document/10843390
+      \endverb
+    \endentry
+    \entry{mlops2023}{online}{}{}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labeltitlesource}{title}
+      \field{title}{MLOps: Continuous Delivery and Automation Pipelines in Machine Learning}
+      \field{urlday}{26}
+      \field{urlmonth}{1}
+      \field{urlyear}{2026}
+      \field{year}{2023}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://arxiv.org/pdf/2308.10908
+      \endverb
+      \verb{url}
+      \verb https://arxiv.org/pdf/2308.10908
+      \endverb
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+
