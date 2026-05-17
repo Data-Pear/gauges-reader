@@ -1,0 +1,15 @@
+[0] Config.pm:328> INFO - This is Biber 2.21
+[0] Config.pm:331> INFO - Logfile is 'vkr_ekuznetsov.blg'
+[25] biber-darwin:342> INFO - === Sat May 16, 2026, 18:02:00
+[32] Biber.pm:421> INFO - Reading 'vkr_ekuznetsov.bcf'
+[63] Biber.pm:1002> INFO - Found 29 citekeys in bib section 0
+[69] Biber.pm:4487> INFO - Processing section 0
+[73] Biber.pm:4678> INFO - Looking for bibtex file 'refs.bib' for section 0
+[73] bibtex.pm:1713> INFO - LaTeX decoding ...
+[81] bibtex.pm:1519> INFO - Found BibTeX data source 'refs.bib'
+[138] UCollate.pm:68> INFO - Overriding locale 'ru-RU' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[139] UCollate.pm:68> INFO - Overriding locale 'ru-RU' defaults 'variable = shifted' with 'variable = non-ignorable'
+[139] Biber.pm:4307> INFO - Sorting list 'none/global//global/global/global' of type 'entry' with template 'none' and locale 'ru-RU'
+[139] Biber.pm:4313> INFO - No sort tailoring available for locale 'ru-RU'
+[147] bbl.pm:676> INFO - Writing 'vkr_ekuznetsov.bbl' with encoding 'UTF-8'
+[152] bbl.pm:779> INFO - Output to vkr_ekuznetsov.bbl
