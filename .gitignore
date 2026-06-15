@@ -38,7 +38,7 @@ logs/
 runs/
 checkpoints/
 outputs/
-models/weights/
+# models/weights/
 *.pt
 *.pth
 *.ckpt
