@@ -148,3 +148,45 @@ uv run --no-sync ./inference/predict.py --task detection --image path/to/image.j
 uv run --no-sync ./inference/predict.py --task keypoints --image path/to/image.jpg
 uv run --no-sync ./inference/predict.py --task segmentation --image path/to/image.jpg
 ```
+
+## 7) HTTP API
+
+The API uses the full geometric pipeline: dial detection, crop keypoints
+(`center`, `scale_start`, `scale_end`), needle segmentation, and normalized
+reading recovery on the `[0, 1]` scale.
+
+Expected model weights are resolved from the stage configs:
+
+```bash
+models/weights/synthetic-analog-gauges-v2_0/det_yolo11n
+models/weights/synthetic-analog-gauges-v2_0/kp_yolo11n-pose
+models/weights/synthetic-analog-gauges-v2_0/seg_yolo11n-seg
+```
+
+Run the API:
+
+```bash
+uv run --no-sync python -m api
+# or
+uv run --no-sync uvicorn api.main:app --host 0.0.0.0 --port 8000
+```
+
+Predict a normalized reading:
+
+```bash
+curl -X POST http://localhost:8000/read \
+  -F "file=@path/to/image.jpg"
+```
+
+Useful endpoints:
+
+```bash
+GET  /health
+GET  /models
+POST /read
+POST /predict
+```
+
+Runtime overrides are available through environment variables:
+`GAUGE_DEVICE`, `GAUGE_DET_WEIGHTS`, `GAUGE_KP_WEIGHTS`, `GAUGE_SEG_WEIGHTS`,
+`GAUGE_DET_THR`, `GAUGE_KP_THR`, `GAUGE_SEG_THR`, and `GAUGE_CROP_PAD_RATIO`.

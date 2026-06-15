@@ -1,24 +1,27 @@
 \xpg@aux {}{russian}
 \contentsline {section}{Аннотация}{3}{section*.2}%
-\contentsline {section}{Ключевые слова}{4}{section*.3}%
+\contentsline {section}{Ключевые слова}{3}{section*.3}%
+\contentsline {section}{Abstract}{4}{section*.4}%
+\contentsline {section}{Keywords}{4}{section*.5}%
 \contentsline {section}{\numberline {1}Введение}{5}{section.1}%
-\contentsline {section}{\numberline {2}Теоретическая часть}{8}{section.2}%
-\contentsline {subsection}{\numberline {2.1}Специфика задачи считывания показаний аналоговых датчиков}{8}{subsection.2.1}%
-\contentsline {subsection}{\numberline {2.2}Основные подходы к решению задачи}{9}{subsection.2.2}%
-\contentsline {subsection}{\numberline {2.3}Сегментация стрелки как промежуточное представление}{9}{subsection.2.3}%
-\contentsline {subsection}{\numberline {2.4}Синтетические данные и доменная рандомизация}{11}{subsection.2.4}%
-\contentsline {subsection}{\numberline {2.5}Метрики качества и их смысл}{11}{subsection.2.5}%
-\contentsline {subsection}{\numberline {2.6}Сравнение трех постановок задачи}{12}{subsection.2.6}%
-\contentsline {subsection}{\numberline {2.7}Вывод по теоретической части}{13}{subsection.2.7}%
-\contentsline {section}{\numberline {3}Практическая часть}{14}{section.3}%
-\contentsline {subsection}{\numberline {3.1}Общая постановка практической части}{14}{subsection.3.1}%
-\contentsline {subsection}{\numberline {3.2}Подготовка данных}{14}{subsection.3.2}%
-\contentsline {subsection}{\numberline {3.3}Эксперимент 1. Двухэтапный пайплайн: детекция и ключевые точки}{15}{subsection.3.3}%
-\contentsline {subsection}{\numberline {3.4}Эксперимент 2. Сегментация стрелки}{17}{subsection.3.4}%
-\contentsline {subsection}{\numberline {3.5}Алгоритм получения угла стрелки и показания}{19}{subsection.3.5}%
-\contentsline {subsection}{\numberline {3.6}Эксперимент 3. Прямая регрессия показания}{20}{subsection.3.6}%
-\contentsline {subsection}{\numberline {3.7}Тест на реальных данных}{21}{subsection.3.7}%
-\contentsline {subsection}{\numberline {3.8}Сравнительный анализ результатов}{23}{subsection.3.8}%
-\contentsline {subsection}{\numberline {3.9}Ограничения текущей реализации и план доработки}{24}{subsection.3.9}%
-\contentsline {subsection}{\numberline {3.10}Вывод по практической части}{25}{subsection.3.10}%
-\contentsline {section}{Список литературы}{26}{section*.9}%
+\contentsline {section}{\numberline {2}Теоретическая часть}{9}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Специфика задачи считывания показаний аналоговых датчиков}{9}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Основные подходы к решению задачи}{10}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Сегментация стрелки как промежуточное представление}{10}{subsection.2.3}%
+\contentsline {subsection}{\numberline {2.4}Синтетические данные и доменная рандомизация}{12}{subsection.2.4}%
+\contentsline {subsection}{\numberline {2.5}Метрики качества и их смысл}{12}{subsection.2.5}%
+\contentsline {subsection}{\numberline {2.6}Сравнение трех постановок задачи}{13}{subsection.2.6}%
+\contentsline {subsection}{\numberline {2.7}Вывод по теоретической части}{14}{subsection.2.7}%
+\contentsline {section}{\numberline {3}Практическая часть}{15}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Общая постановка практической части}{15}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Подготовка данных}{15}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Эксперимент 1. Двухэтапный пайплайн: детекция и ключевые точки}{17}{subsection.3.3}%
+\contentsline {subsection}{\numberline {3.4}Эксперимент 2. Сегментация стрелки}{18}{subsection.3.4}%
+\contentsline {subsection}{\numberline {3.5}Алгоритм получения угла стрелки и показания}{20}{subsection.3.5}%
+\contentsline {subsection}{\numberline {3.6}Эксперимент 3. Прямая регрессия показания}{22}{subsection.3.6}%
+\contentsline {subsection}{\numberline {3.7}Тест на реальных данных}{24}{subsection.3.7}%
+\contentsline {subsection}{\numberline {3.8}Сравнительный анализ результатов}{27}{subsection.3.8}%
+\contentsline {subsection}{\numberline {3.9}Ограничения текущей реализации и план доработки}{28}{subsection.3.9}%
+\contentsline {subsection}{\numberline {3.10}Вывод по практической части}{29}{subsection.3.10}%
+\contentsline {section}{\numberline {4}Заключение}{31}{section.4}%
+\contentsline {section}{Список литературы}{33}{section*.16}%

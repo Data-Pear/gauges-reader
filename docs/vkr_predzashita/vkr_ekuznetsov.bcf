@@ -2387,7 +2387,7 @@
     <bcf:citekey order="3" intorder="3">horvath2023</bcf:citekey>
     <bcf:citekey order="3" intorder="4">blenderproc2020</bcf:citekey>
     <bcf:citekey order="3" intorder="5">zhang2019</bcf:citekey>
-    <bcf:citekey order="3" intorder="6">celsoSynthetic</bcf:citekey>
+    <bcf:citekey order="3" intorder="6">syntheticReview2022</bcf:citekey>
     <bcf:citekey order="4" intorder="1">howells2021</bcf:citekey>
     <bcf:citekey order="4" intorder="2">leon2024</bcf:citekey>
     <bcf:citekey order="4" intorder="3">reitsma2024</bcf:citekey>
@@ -2397,13 +2397,13 @@
     <bcf:citekey order="5" intorder="2">wang2022</bcf:citekey>
     <bcf:citekey order="5" intorder="3">reitsma2024</bcf:citekey>
     <bcf:citekey order="5" intorder="4">coords2023</bcf:citekey>
-    <bcf:citekey order="6" intorder="1">gaugeInspection2011</bcf:citekey>
+    <bcf:citekey order="6" intorder="1">dyer1983</bcf:citekey>
     <bcf:citekey order="6" intorder="2">adsul2021</bcf:citekey>
     <bcf:citekey order="6" intorder="3">coords2023</bcf:citekey>
     <bcf:citekey order="6" intorder="4">sciRep2025</bcf:citekey>
     <bcf:citekey order="7" intorder="1">hassanein2015</bcf:citekey>
     <bcf:citekey order="7" intorder="2">incrementalHough2016</bcf:citekey>
-    <bcf:citekey order="7" intorder="3">gaugeInspection2011</bcf:citekey>
+    <bcf:citekey order="7" intorder="3">dyer1983</bcf:citekey>
     <bcf:citekey order="7" intorder="4">coords2023</bcf:citekey>
     <bcf:citekey order="7" intorder="5">kudrina2014</bcf:citekey>
     <bcf:citekey order="8" intorder="1">yoloSurvey2022</bcf:citekey>
@@ -2412,10 +2412,14 @@
     <bcf:citekey order="8" intorder="4">leon2024</bcf:citekey>
     <bcf:citekey order="8" intorder="5">meterRegression2024</bcf:citekey>
     <bcf:citekey order="8" intorder="6">sciRep2025</bcf:citekey>
+    <bcf:citekey order="8" intorder="7">deng2022</bcf:citekey>
+    <bcf:citekey order="8" intorder="8">peng2024</bcf:citekey>
+    <bcf:citekey order="8" intorder="9">linknetYolo2024</bcf:citekey>
     <bcf:citekey order="9" intorder="1">unet2015</bcf:citekey>
     <bcf:citekey order="9" intorder="2">deeplab2016</bcf:citekey>
     <bcf:citekey order="9" intorder="3">maskrcnn2017</bcf:citekey>
-    <bcf:citekey order="9" intorder="4">hybridYoloDeepLab2024</bcf:citekey>
+    <bcf:citekey order="9" intorder="4">deng2022</bcf:citekey>
+    <bcf:citekey order="9" intorder="5">linknetYolo2024</bcf:citekey>
     <bcf:citekey order="10" intorder="1">tobin2017</bcf:citekey>
     <bcf:citekey order="10" intorder="2">horvath2023</bcf:citekey>
     <bcf:citekey order="10" intorder="3">blenderproc2020</bcf:citekey>
@@ -2447,10 +2451,11 @@
     <bcf:citekey order="19" intorder="2">vasilyev2025</bcf:citekey>
     <bcf:citekey order="19" intorder="3">howells2021</bcf:citekey>
     <bcf:citekey order="19" intorder="4">reitsma2024</bcf:citekey>
-    <bcf:citekey order="20" intorder="1">gaugeInspection2011</bcf:citekey>
+    <bcf:citekey order="19" intorder="5">peng2024</bcf:citekey>
+    <bcf:citekey order="20" intorder="1">dyer1983</bcf:citekey>
     <bcf:citekey order="20" intorder="2">adsul2021</bcf:citekey>
     <bcf:citekey order="20" intorder="3">sciRep2025</bcf:citekey>
-    <bcf:citekey order="20" intorder="4">hybridYoloDeepLab2024</bcf:citekey>
+    <bcf:citekey order="20" intorder="4">linknetYolo2024</bcf:citekey>
     <bcf:citekey order="21" intorder="1">leon2024</bcf:citekey>
     <bcf:citekey order="21" intorder="2">meterRegression2024</bcf:citekey>
     <bcf:citekey order="21" intorder="3">sciRep2025</bcf:citekey>
@@ -2464,6 +2469,7 @@
     <bcf:citekey order="24" intorder="2">mobilenetv2</bcf:citekey>
     <bcf:citekey order="24" intorder="3">lightweightInspection2024</bcf:citekey>
     <bcf:citekey order="24" intorder="4">mlops2023</bcf:citekey>
+    <bcf:citekey order="25" intorder="1">gaugesReaderRepo2026</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="none">

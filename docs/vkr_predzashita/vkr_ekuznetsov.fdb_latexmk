@@ -1,17 +1,17 @@
 # Fdb version 4
-["biber vkr_ekuznetsov"] 1778943718.96053 "vkr_ekuznetsov.bcf" "vkr_ekuznetsov.bbl" "vkr_ekuznetsov" 1778943725.84216 0
-  "refs.bib" 1777715080.49083 9536 7bf8dae350cadaee325b65e928f7bb38 ""
-  "vkr_ekuznetsov.bcf" 1778943724.98381 113899 b224f28626b5d735ee50c5cab50dabb3 "xelatex"
+["biber vkr_ekuznetsov"] 1779104728.87991 "vkr_ekuznetsov.bcf" "vkr_ekuznetsov.bbl" "vkr_ekuznetsov" 1779104740.86075 0
+  "refs.bib" 1779104696.82803 13482 01bd79980dd973ad937d22615e8a44ac ""
+  "vkr_ekuznetsov.bcf" 1779104734.69433 114258 95f25c1b1be311df94be8869b64a45d3 "xelatex"
   (generated)
   "vkr_ekuznetsov.bbl"
   "vkr_ekuznetsov.blg"
   (rewritten before read)
-["xdvipdfmx"] 1778943725.05649 "vkr_ekuznetsov.xdv" "vkr_ekuznetsov.pdf" "vkr_ekuznetsov" 1778943725.84357 0
-  "vkr_ekuznetsov.xdv" 1778943724.98457 485516 aa0b0a68e482ed8a9c4be4e3fa16453e "xelatex"
+["xdvipdfmx"] 1779104734.76228 "vkr_ekuznetsov.xdv" "vkr_ekuznetsov.pdf" "vkr_ekuznetsov" 1779104740.86222 0
+  "vkr_ekuznetsov.xdv" 1779104734.69507 591928 4c45af89ae4ddf573cef3377d11db0d7 "xelatex"
   (generated)
   "vkr_ekuznetsov.pdf"
   (rewritten before read)
-["xelatex"] 1778943723.42796 "vkr_ekuznetsov.tex" "vkr_ekuznetsov.xdv" "vkr_ekuznetsov" 1778943725.84223 0
+["xelatex"] 1779104733.18246 "vkr_ekuznetsov.tex" "vkr_ekuznetsov.xdv" "vkr_ekuznetsov" 1779104740.86081 0
   "/usr/local/texlive/2026/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/local/texlive/2026/texmf-dist/fonts/tfm/adobe/zapfding/pzdr.tfm" 1136768653 1528 f853c4d1b4e0550255e02831fdc8496f ""
   "/usr/local/texlive/2026/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1246382020 1004 54797486969f23fa377b128694d548df ""
@@ -137,6 +137,7 @@
   "/usr/local/texlive/2026/texmf-dist/tex/latex/extsizes/extarticle.cls" 1137110130 20602 3112294ba237d94ce4a1502cfef3594f ""
   "/usr/local/texlive/2026/texmf-dist/tex/latex/extsizes/size14.clo" 1137110130 6214 cc6d832fdd2fc5f4a20ee1a002f45d0f ""
   "/usr/local/texlive/2026/texmf-dist/tex/latex/fancyhdr/fancyhdr.sty" 1739048179 31715 19e60610b63819fe670dfa1cd84a4e94 ""
+  "/usr/local/texlive/2026/texmf-dist/tex/latex/float/float.sty" 1137110151 6749 16d2656a1984957e674b149555f1ea1d ""
   "/usr/local/texlive/2026/texmf-dist/tex/latex/fontspec/fontspec-xetex.sty" 1759176595 164714 a0cc5579dc5aec4384653d8dd1b3832a ""
   "/usr/local/texlive/2026/texmf-dist/tex/latex/fontspec/fontspec.cfg" 1532898934 549 c4adac819276241fea8eb79c5ab7b99e ""
   "/usr/local/texlive/2026/texmf-dist/tex/latex/fontspec/fontspec.sty" 1759176595 3804 debc05110ffb506cef68ea4e72c7bcee ""
@@ -204,12 +205,14 @@
   "/usr/local/texlive/2026/texmf-var/web2c/xetex/xelatex.fmt" 1777395973 5948562 f4aa9a24dc4c583014bd966bba4de687 ""
   "/usr/local/texlive/2026/texmf.cnf" 1774209515 577 648cd9f92f9c0eac486f4c71c85cfbbe ""
   "det_kp_result.jpeg" 1777715080.48931 182185 c834246fc5fe61a7e6cb952e139629c2 ""
+  "full_pipeline_real_landmarks_samples.png" 1779010198.36547 4164313 3d721b5b8ed412011e4d9c3c4c572796 ""
   "regression_result.jpeg" 1777715080.49152 188467 8fa6632e2d1a30f9e5208c969c2d9879 ""
-  "vkr_ekuznetsov.aux" 1778943724.98019 15974 8de6ee0cc700fdfab59b59883055d031 "xelatex"
-  "vkr_ekuznetsov.bbl" 1778943720.26983 37314 0bccae58fcdc2f8e6645577cef7310bf "biber vkr_ekuznetsov"
-  "vkr_ekuznetsov.run.xml" 1778943724.98442 2467 e83b90b91f52ca569eef7656ea8c153a "xelatex"
-  "vkr_ekuznetsov.tex" 1778943707.64883 73112 7d7c803129a7d9de336f0301e9e14e5a ""
-  "vkr_ekuznetsov.toc" 1778943724.98454 2817 9a5a6e9303956a143819d6a2967c2035 "xelatex"
+  "seg_full_samples.png" 1779010198.36817 5888584 a19d0daaad4d7f3b3922bff75a1d9e91 ""
+  "vkr_ekuznetsov.aux" 1779104734.6904 18582 746166b15cc5b8ae451966dc30de9e67 "xelatex"
+  "vkr_ekuznetsov.bbl" 1779104730.04683 61186 0bd7e25c5f3e037d7deb1c342c83c9cd "biber vkr_ekuznetsov"
+  "vkr_ekuznetsov.run.xml" 1779104734.69493 2467 e83b90b91f52ca569eef7656ea8c153a "xelatex"
+  "vkr_ekuznetsov.tex" 1779104718.48421 84084 ef6f37883601c5d22b742f4dc5787897 ""
+  "vkr_ekuznetsov.toc" 1779104734.69504 2997 32b57f039f7717677619df10c1987265 "xelatex"
   (generated)
   "vkr_ekuznetsov.aux"
   "vkr_ekuznetsov.bcf"

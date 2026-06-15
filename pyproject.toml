@@ -6,11 +6,15 @@ readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "albumentations>=2.0.8",
+    "fastapi>=0.115.0",
     "huggingface-hub>=1.8.0",
     "matplotlib>=3.10.8",
+    "numpy>=2.0.0",
+    "python-multipart>=0.0.20",
     "torch==2.10.0+cu128",
     "torchvision==0.25.0+cu128",
     "ultralytics>=8.3.0",
+    "uvicorn[standard]>=0.32.0",
 ]
 
 [tool.uv.sources]
